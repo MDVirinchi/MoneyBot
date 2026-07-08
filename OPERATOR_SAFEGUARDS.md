@@ -236,17 +236,17 @@ if phantoms:
 |---------|---------------|---------------|
 | Run twice | ✅ File lock | None |
 | Wrong config.py | ✅ Health check fails | Add JWT expiry decode |
-| Forget token renewal | ❌ | Add 8 PM Telegram reminder |
+| Forget token renewal | ❌ | Add 8 PM Telegram reminder (see Mistake #3) |
 | Trade on holiday | ⚠️ HIGH warning only | Upgrade to CRITICAL |
 | Manual JSON typo | ⚠️ Invariant catches most | Add string-vs-int check |
-| Wrong file version | ❌ | Initialize git repo |
+| Wrong file version | ✅ git repo initialized | None |
 | Wrong Upstox account | ⚠️ Small capital limits damage | Add account-type label |
-| Delete state file | ⚠️ Manual recovery only | Automate daily backup |
+| Delete state file | ✅ Auto-backup on startup | None |
 | Change strategy param | ⚠️ Checklist only | Add parameter fingerprint |
-| Misread audit output | ⚠️ Output highlighted | Add Telegram on PHANTOM |
+| Misread audit output | ✅ Telegram on PHANTOM/BROKER ONLY | None |
 
-**Highest-value additions (30 min total):**
-1. Evening token reminder Telegram (5 min — one Task Scheduler entry)
-2. `git init` in moneybot folder (5 min — prevents wrong-version deploys)
-3. Automate state backup as first step in auto_daily.py (10 min)
-4. Telegram alert on PHANTOM positions in broker_audit.py (10 min)
+**Status of highest-value additions:**
+1. Evening token reminder Telegram — ❌ manual setup (see Mistake #3 for Task Scheduler command)
+2. `git init` in moneybot folder — ✅ DONE (v1.0.0 committed)
+3. Automate state backup as first step in auto_daily.py — ✅ DONE (Step 0 in main())
+4. Telegram alert on PHANTOM/BROKER_ONLY positions in broker_audit.py — ✅ DONE

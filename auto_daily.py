@@ -155,6 +155,17 @@ def main():
         save_daily_summary(summary)
         return
 
+    # Step 0: Backup state before any trading begins
+    state_src = Path("execution_state.json")
+    if state_src.exists():
+        backup_name = f"execution_state.backup_{date.today()}.json"
+        try:
+            import shutil
+            shutil.copy2(state_src, backup_name)
+            log.info(f"State backed up → {backup_name}")
+        except Exception as e:
+            log.warning(f"State backup failed (non-fatal): {e}")
+
     # Step 1: Generate ops report
     ops = {}
     if run_step("Step 1: Generate ops report", step_ops_report):

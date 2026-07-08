@@ -232,6 +232,23 @@ def run_audit():
         print(f"  *** {len(mismatches)} MISMATCH(ES) FOUND ***")
         for m in mismatches:
             print(f"    {m['symbol']}: {m['type']} — local_qty={m['local_qty']}, broker_qty={m['broker_qty']}")
+
+        phantoms = [m for m in mismatches if m["type"] == "phantom"]
+        broker_only = [m for m in mismatches if m["type"] == "broker_only"]
+        if phantoms or broker_only:
+            try:
+                from notify import send
+                lines = ["BROKER AUDIT: POSITION MISMATCH"]
+                if phantoms:
+                    lines.append(f"PHANTOM (bot thinks it owns, broker shows 0):")
+                    lines.extend(f"  {m['symbol']}" for m in phantoms)
+                if broker_only:
+                    lines.append(f"BROKER ONLY (broker has, bot doesn't know):")
+                    lines.extend(f"  {m['symbol']}" for m in broker_only)
+                lines.append("Manual review required. See RECOVERY_RUNBOOK.md.")
+                send("\n".join(lines))
+            except Exception:
+                pass
     else:
         print(f"  All positions match. No drift detected.")
 
