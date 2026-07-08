@@ -269,6 +269,14 @@ def main():
 
     save_daily_summary(summary)
 
+    # Step 7: Immutable audit archive
+    try:
+        from daily_archive import create_archive
+        archive_path = create_archive()
+        log.info(f"Audit archive created: {archive_path}")
+    except Exception as e:
+        log.warning(f"Audit archive failed (non-fatal): {e}")
+
     # ── TELEGRAM NOTIFICATION ────────────────────────────────────────────
     try:
         from notify import send

@@ -30,6 +30,11 @@ INVARIANT_VIOLATION_*.json
 trade_journal.csv
 shadow_journal.csv
 
+# Audit archives — immutable ZIPs, not source code
+audit_archives/
+regime_history.json
+strategy_fingerprint_history.json
+
 # Python cache
 __pycache__/
 *.pyc
