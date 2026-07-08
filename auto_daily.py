@@ -155,7 +155,23 @@ def main():
         save_daily_summary(summary)
         return
 
-    # Step 0: Backup state before any trading begins
+    # Step 0a: Strategy fingerprint — halt if parameters have drifted
+    try:
+        from strategy_fingerprint import assert_frozen, get_fingerprint, record_daily as _fp_record
+        assert_frozen()
+        log.info(f"Strategy fingerprint: {get_fingerprint()} — FROZEN")
+    except ValueError as e:
+        log.critical(str(e))
+        try:
+            from notify import send
+            send(f"MONEYBOT HALTED\nStrategy fingerprint drift: {e}")
+        except Exception:
+            pass
+        return
+    except ImportError:
+        pass
+
+    # Step 0b: Backup state before any trading begins
     state_src = Path("execution_state.json")
     if state_src.exists():
         backup_name = f"execution_state.backup_{date.today()}.json"
@@ -174,6 +190,24 @@ def main():
             import json as _j
             ops = _j.loads(Path(f"ops_log_{date.today()}.json").read_text(encoding="utf-8"))
             summary["regime"] = ops.get("regime", "UNKNOWN")
+            # Record regime history and fingerprint for this day
+            try:
+                import json as _jj
+                state = {}
+                if Path("execution_state.json").exists():
+                    state = _jj.loads(Path("execution_state.json").read_text(encoding="utf-8"))
+                from regime_history import record as _rh_record
+                _rh_record(
+                    regime=ops.get("regime", "UNKNOWN"),
+                    pnl_cumulative=state.get("pnl", 0.0),
+                    nifty=ops.get("nifty", 0.0),
+                    positions=len(state.get("positions", {})),
+                )
+                from strategy_fingerprint import record_daily as _fp_day
+                _fp_day(regime=ops.get("regime", "UNKNOWN"),
+                        pnl=state.get("pnl", 0.0))
+            except Exception as _e:
+                log.warning(f"Regime/fingerprint record failed (non-fatal): {_e}")
         except Exception:
             summary["regime"] = "UNKNOWN"
     else:
