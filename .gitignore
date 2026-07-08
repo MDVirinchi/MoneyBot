@@ -1,0 +1,45 @@
+# Secrets — NEVER commit
+config.py
+
+# Runtime state — changes every day, not part of the codebase
+execution_state.json
+execution_state.backup_*.json
+shadow_state.json
+risk_state.json
+trading_state.json
+seen_jobs.json
+performance_registry.json
+
+# Logs — too large, not code
+*.log
+auto_daily.log
+execution_engine.log
+shadow_engine.log
+broker_audit.log
+moneybot_*.log
+paper_runner.log
+
+# Daily data files — regenerated every run
+ops_log_*.json
+broker_audit_log.json
+comparison_log.json
+daily_summary.json
+INVARIANT_VIOLATION_*.json
+
+# Journal data — records, not code
+trade_journal.csv
+shadow_journal.csv
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+Thumbs.db
+desktop.ini
