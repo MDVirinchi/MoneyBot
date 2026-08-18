@@ -1,0 +1,218 @@
+================================================================================
+MONEYBOT RS60/EP40 — STRATEGY PARITY AUDIT
+Run date: 2026-06-15
+Comparing: final_validation.py (FV)  vs  daily_ops_report.py (OPS)
+================================================================================
+
+[PHASE 1] Downloading 5-year data for all 136 stocks + Nifty (~10 min)...
+  20/136 downloaded, 20 valid so far...
+  40/136 downloaded, 40 valid so far...
+  60/136 downloaded, 60 valid so far...
+  80/136 downloaded, 80 valid so far...
+  100/136 downloaded, 100 valid so far...
+  120/136 downloaded, 119 valid so far...
+
+  Universe loaded: 134 / 136 stocks with 300+ days
+  Nifty: 2021-06-15 to 2026-06-15  (1235 trading days)
+
+[PHASE 2] Running parity audit on 10 historical OOS dates...
+  FV  = final_validation.py engine (reference)
+  OPS = daily_ops_report.py as-coded (period='100d')
+  FIX = daily_ops_report.py with F1+F2 applied (period='200d', EP vol fixed)
+
+
+  ── 2025-01-10 ──────────────────────────────────────────────────
+  FV  scored=134  top-10: COFORGE, PERSISTENT, EICHERMOT, NAVINFLUOR, CDSL, BIOCON, ZENSARTECH, MUTHOOTFIN, FEDERALBNK, PAGEIND
+  OPS scored=  0  skip=134  top-10: [EMPTY — D1 failure]
+  FIX scored=134  skip=  0  top-10: COFORGE, PERSISTENT, EICHERMOT, NAVINFLUOR, CDSL, BIOCON, ZENSARTECH, MUTHOOTFIN, FEDERALBNK, PAGEIND
+  Match OPS(as-coded): 0%   Match FIX: 100%
+  Spearman OPS: nan   Spearman FIX: 1.000
+
+  ── 2025-01-24 ──────────────────────────────────────────────────
+  FV  scored=134  top-10: ZENSARTECH, COFORGE, BIOCON, PERSISTENT, NAVINFLUOR, EICHERMOT, KOTAKBANK, KEI, WIPRO, LTTS
+  OPS scored=  0  skip=134  top-10: [EMPTY — D1 failure]
+  FIX scored=134  skip=  0  top-10: ZENSARTECH, COFORGE, PERSISTENT, BIOCON, NAVINFLUOR, EICHERMOT, KOTAKBANK, KEI, WIPRO, LTTS
+  Match OPS(as-coded): 0%   Match FIX: 100%
+  Spearman OPS: nan   Spearman FIX: 0.988
+
+  ── 2025-02-07 ──────────────────────────────────────────────────
+  FV  scored=134  top-10: ZENSARTECH, NAVINFLUOR, PERSISTENT, EICHERMOT, COFORGE, KOTAKBANK, BIOCON, LTTS, BAJFINANCE, MUTHOOTFIN
+  OPS scored=  0  skip=134  top-10: [EMPTY — D1 failure]
+  FIX scored=134  skip=  0  top-10: ZENSARTECH, NAVINFLUOR, PERSISTENT, EICHERMOT, COFORGE, KOTAKBANK, BIOCON, LTTS, BAJFINANCE, MUTHOOTFIN
+  Match OPS(as-coded): 0%   Match FIX: 100%
+  Spearman OPS: nan   Spearman FIX: 1.000
+
+  ── 2025-02-21 ──────────────────────────────────────────────────
+  FV  scored=134  top-10: SUNDARMFIN, MANAPPURAM, NAVINFLUOR, BAJAJFINSV, KOTAKBANK, ZENSARTECH, BAJFINANCE, IGL, CHOLAFIN, EICHERMOT
+  OPS scored=  0  skip=134  top-10: [EMPTY — D1 failure]
+  FIX scored=134  skip=  0  top-10: MANAPPURAM, SUNDARMFIN, NAVINFLUOR, KOTAKBANK, BAJAJFINSV, ZENSARTECH, BAJFINANCE, IGL, CHOLAFIN, EICHERMOT
+  Match OPS(as-coded): 0%   Match FIX: 100%
+  Spearman OPS: nan   Spearman FIX: 0.976
+
+  ── 2025-03-07 ──────────────────────────────────────────────────
+  FV  scored=134  top-10: NAVINFLUOR, MANAPPURAM, KOTAKBANK, SUNDARMFIN, EICHERMOT, BAJAJFINSV, CHOLAFIN, BAJFINANCE, MUTHOOTFIN, TATACONSUM
+  OPS scored=  0  skip=134  top-10: [EMPTY — D1 failure]
+  FIX scored=134  skip=  0  top-10: NAVINFLUOR, MANAPPURAM, KOTAKBANK, SUNDARMFIN, EICHERMOT, BAJAJFINSV, CHOLAFIN, BAJFINANCE, MUTHOOTFIN, TATACONSUM
+  Match OPS(as-coded): 0%   Match FIX: 100%
+  Spearman OPS: nan   Spearman FIX: 1.000
+
+  ── 2025-03-21 ──────────────────────────────────────────────────
+  FV  scored=134  top-10: SUNDARMFIN, NAVINFLUOR, MANAPPURAM, KOTAKBANK, DMART, BAJAJFINSV, CHOLAFIN, BAJFINANCE, EICHERMOT, HDFCLIFE
+  OPS scored=  0  skip=134  top-10: [EMPTY — D1 failure]
+  FIX scored=134  skip=  0  top-10: SUNDARMFIN, NAVINFLUOR, MANAPPURAM, KOTAKBANK, DMART, BAJAJFINSV, CHOLAFIN, BAJFINANCE, EICHERMOT, HDFCLIFE
+  Match OPS(as-coded): 0%   Match FIX: 100%
+  Spearman OPS: nan   Spearman FIX: 1.000
+
+  ── 2025-04-04 ──────────────────────────────────────────────────
+  FV  scored=134  top-10: NAVINFLUOR, MANAPPURAM, KOTAKBANK, HDFCLIFE, TATACONSUM, CHOLAFIN, BAJFINANCE, MUTHOOTFIN, DMART, GODREJCP
+  OPS scored=  0  skip=134  top-10: [EMPTY — D1 failure]
+  FIX scored=134  skip=  0  top-10: NAVINFLUOR, MANAPPURAM, KOTAKBANK, HDFCLIFE, TATACONSUM, CHOLAFIN, BAJFINANCE, MUTHOOTFIN, DMART, GODREJCP
+  Match OPS(as-coded): 0%   Match FIX: 100%
+  Spearman OPS: nan   Spearman FIX: 1.000
+
+  ── 2025-04-17 ──────────────────────────────────────────────────
+  FV  scored=134  top-10: DMART, MANAPPURAM, KOTAKBANK, HDFCLIFE, TATACONSUM, CHOLAFIN, SUNDARMFIN, TVSMOTOR, PNBHOUSING, ULTRACEMCO
+  OPS scored=  0  skip=134  top-10: [EMPTY — D1 failure]
+  FIX scored=134  skip=  0  top-10: DMART, MANAPPURAM, KOTAKBANK, HDFCLIFE, TATACONSUM, CHOLAFIN, SUNDARMFIN, TVSMOTOR, PNBHOUSING, ULTRACEMCO
+  Match OPS(as-coded): 0%   Match FIX: 100%
+  Spearman OPS: nan   Spearman FIX: 1.000
+
+  ── 2025-05-02 ──────────────────────────────────────────────────
+  FV  scored=134  top-10: RBLBANK, MANAPPURAM, AUBANK, TATACONSUM, SUNDARMFIN, NAVINFLUOR, CHOLAFIN, DMART, TVSMOTOR, PIIND
+  OPS scored=  0  skip=134  top-10: [EMPTY — D1 failure]
+  FIX scored=134  skip=  0  top-10: RBLBANK, MANAPPURAM, AUBANK, TATACONSUM, SUNDARMFIN, NAVINFLUOR, CHOLAFIN, DMART, TVSMOTOR, PIIND
+  Match OPS(as-coded): 0%   Match FIX: 100%
+  Spearman OPS: nan   Spearman FIX: 1.000
+
+  ── 2025-05-16 ──────────────────────────────────────────────────
+  FV  scored=134  top-10: RBLBANK, INDIGO, APLAPOLLO, WHIRLPOOL, ANGELONE, ADANIPORTS, AUBANK, NHPC, TATACONSUM, CESC
+  OPS scored=  0  skip=134  top-10: [EMPTY — D1 failure]
+  FIX scored=134  skip=  0  top-10: RBLBANK, INDIGO, APLAPOLLO, WHIRLPOOL, ANGELONE, ADANIPORTS, AUBANK, NHPC, TATACONSUM, CESC
+  Match OPS(as-coded): 0%   Match FIX: 100%
+  Spearman OPS: nan   Spearman FIX: 1.000
+
+
+================================================================================
+DATE-BY-DATE COMPARISON TABLE
+================================================================================
+Date          FV_N  OPS_N  OPS_Skip  Match_OPS  Match_FIX   Spr_OPS   Spr_FIX
+---------------------------------------------------------------------------
+2025-01-10     134      0       134         0%       100%        nan     1.000
+2025-01-24     134      0       134         0%       100%        nan     0.988
+2025-02-07     134      0       134         0%       100%        nan     1.000
+2025-02-21     134      0       134         0%       100%        nan     0.976
+2025-03-07     134      0       134         0%       100%        nan     1.000
+2025-03-21     134      0       134         0%       100%        nan     1.000
+2025-04-04     134      0       134         0%       100%        nan     1.000
+2025-04-17     134      0       134         0%       100%        nan     1.000
+2025-05-02     134      0       134         0%       100%        nan     1.000
+2025-05-16     134      0       134         0%       100%        nan     1.000
+---------------------------------------------------------------------------
+AVERAGE                                     0%       100%       nan     0.996
+
+  PASS threshold: membership ≥95%, Spearman ≥0.85
+
+
+================================================================================
+DISCREPANCY CATALOGUE — STATIC CODE ANALYSIS
+================================================================================
+
+  [D1] CRITICAL — data_period
+  FV  : yf.Ticker(ticker).history(period='5y')  [line 138]
+  OPS : yf.download(tickers, period='100d')     [line 103]
+  Detail: period='100d' = 100 calendar days = ~71 trading days. Minimum bar check (line 124): RS_WINDOW + 10 = 73. 71 < 73 → ALL stocks fail the check → candidate list is empty. This defect has been invisible because fetch_and_score() is only called in Bull/Flat regime (line 289). The system has been in Bear regime since before paper trading started. This will fail on the first non-Bear day.
+  Impact: Candidate list = empty. Top-10 membership match = 0%.
+  Fix   : Change period='100d' to period='200d' in fetch_and_score() line 103.
+
+  [D2] MODERATE — ep_volume_average
+  FV  : evols=[vol for vol in ed if vol>0]; av=mean(evols)  [lines 201-202]
+  OPS : avg_vol = np.nanmean(vol_ep)                        [line 144]
+  Detail: FV excludes zero-volume days before computing the average. OPS uses np.nanmean which includes zero entries (NaN excluded, zeros included). Lower avg_vol in OPS → more days satisfy vol[i] > 1.5 × avg_vol → higher EP scores → different ranking. Effect is small for large-cap stocks (rare zero-volume days) but non-zero: corporate action days, trading halts, and yfinance data gaps can produce 0-volume entries. Over a 63-day window, 1-2 zero-volume days lower avg_vol by ~2-5%, inflating EP scores.
+  Impact: Systematic EP score inflation. Estimated 1-3 rank position shifts.
+  Fix   : Replace np.nanmean(vol_ep) with mean of vol_ep[vol_ep > 0].
+
+  [D3] MODERATE — rs_date_anchor
+  FV  : cp = c.get(all_dates[gi-63], {}).get('close')  [line 198]
+  OPS : stock_ret = px_arr[-1] / px_arr[-RS_WINDOW-1] - 1  [line 134]
+  Detail: FV anchors the RS lookback to all_dates[gi-63]: the date exactly 63 positions back in the GLOBAL Nifty date list. If the stock has no data on that exact date, cp=None and the stock is SKIPPED from RS (excluded from composite). OPS uses px_arr[-64]: 63 bars back in the STOCK's own date array. If the stock's date array has gaps, -64 maps to a DIFFERENT actual date. The stock is still included (not skipped). Diverges for stocks with trading suspensions or yfinance data gaps.
+  Impact: 0-2 stocks may differ between FV and OPS top-10 per rebalance date.
+  Fix   : Verification only: log the actual date at px_arr[-64] and confirm it matches all_dates[gi-63] for each scored stock.
+
+  [D4] NEGLIGIBLE — percentile_ties
+  FV  : (r+1)/n*100 over stable-sorted list  [lines 217-219]
+  OPS : rank(pct=True) * 100, method='average'  [lines 163-165]
+  Detail: FV assigns adjacent (not averaged) ranks to tied values. OPS averages ranks of tied values. Floating-point RS and EP values are virtually never identical. Impact in practice: zero.
+  Impact: Negligible.
+  Fix   : None required.
+
+  [D5] MINOR — missing_rs_stock_inclusion
+  FV  : if cn and cp: raw_rs[sym]=...  else: sym absent from RS  [line 199]
+  OPS : stock is included regardless if bars >= 73  [line 124]
+  Detail: When a stock has no data on all_dates[gi-63], FV silently drops it from RS. Since composite requires RS∩EP intersection (line 225), the stock is excluded from the composite ranking. OPS includes the stock using its nearest available bar. Stocks present in OPS ranking but absent from FV ranking (due to D5) contribute to membership divergence beyond what D2/D3 cause.
+  Impact: 0-1 stocks may appear in OPS top-10 but not FV top-10.
+  Fix   : Add explicit check: if the date at px_arr[-64] differs from the expected Nifty-calendar anchor by >1 day, skip the stock's RS.
+
+
+================================================================================
+RECOMMENDED FIXES FOR daily_ops_report.py
+================================================================================
+
+  [F1] Fix D1 — data period (REQUIRED)
+  File   : daily_ops_report.py, line 103
+  Change :
+    BEFORE:  raw = yf.download(tickers, period="100d", ...)
+    AFTER :  raw = yf.download(tickers, period="200d", ...)
+  Why    : 200 calendar days = ~143 trading days. Comfortably covers RS_WINDOW(63)
+           + EP_WINDOW(63) + the 10-bar safety margin in the minimum check (73).
+
+  [F2] Fix D2 — EP average volume (REQUIRED for parity)
+  File   : daily_ops_report.py, lines 144-145 inside fetch_and_score()
+  Change :
+    BEFORE:  avg_vol = np.nanmean(vol_ep)
+    AFTER :  vol_nz  = vol_ep[vol_ep > 0]
+             avg_vol = float(np.mean(vol_nz)) if len(vol_nz) > 0 else 0.0
+  Why    : Matches FV's zero-volume exclusion. Prevents lower avg_vol from
+           inflating EP scores relative to the backtest.
+
+  [F3] Verify D3 — RS date alignment (RECOMMENDED)
+  File   : daily_ops_report.py, inside fetch_and_score() after computing px_arr
+  Add    : (inside the per-stock loop, after the nifty alignment fail check)
+             anchor_date = str(px.index[-RS_WINDOW-1].date())
+             # Expected: should be within 1 trading day of 63 Nifty days ago
+             # (No code change needed; log the date for one-time verification)
+  Why    : Confirms that px_arr[-64] lands on the same actual date as
+           all_dates[gi-63]. For large-cap NSE stocks, this should always hold.
+
+
+================================================================================
+FINAL VERDICT
+================================================================================
+
+  OPS as-coded (period='100d'):
+    Membership match : 0%  [threshold: ≥95%]
+    Spearman         : nan  [threshold: ≥0.85]
+    Verdict          : FAIL
+
+  OPS with F1+F2 applied (period='200d', EP vol fix):
+    Membership match : 100%  [threshold: ≥95%]
+    Spearman         : 0.996  [threshold: ≥0.85]
+    Verdict          : PASS
+
+  ROOT CAUSE (D1):
+    daily_ops_report.py fetch_and_score() uses period='100d' (~71 trading days).
+    The minimum bar filter requires 73. 71 < 73 → all stocks skipped.
+    fetch_and_score() has never been called in production (system has been
+    in Bear regime throughout). This is a latent defect that will produce
+    an empty candidate list on the first Bull or Flat trading day.
+
+  ACTION REQUIRED BEFORE PAPER TRADING CAN BEGIN:
+    1. Apply F1 (change period to '200d')      — fixes D1, the guaranteed failure
+    2. Apply F2 (zero-vol exclusion in EP)      — fixes D2, aligns EP scoring
+    3. Re-run this audit script                 — confirm ≥95% match after fixes
+    4. Only proceed to paper trading after PASS
+
+================================================================================
+AUDIT COMPLETE
+================================================================================
+
+JSON saved : C:\Users\rushi\Downloads\moneybot\parity_audit_results.json

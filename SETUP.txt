@@ -1,0 +1,68 @@
+═══════════════════════════════════════════════════════
+         MONEYBOT — SETUP GUIDE
+═══════════════════════════════════════════════════════
+
+STEP 1: Install Python dependencies
+─────────────────────────────────────
+  pip install -r requirements.txt
+
+
+STEP 2: Get your API keys (takes ~10 minutes)
+──────────────────────────────────────────────
+
+  A) UPSTOX (for stock trading with your ₹5,000)
+     1. Go to: https://upstox.com/developer/apps
+     2. Create a new app
+     3. Copy API Key and API Secret
+     4. Set Redirect URI to: http://localhost:8080
+     5. Paste into config.py
+
+  B) ANTHROPIC / CLAUDE (for AI freelance fulfillment)
+     1. Go to: https://console.anthropic.com
+     2. Create an account (free tier available)
+     3. Generate an API key
+     4. Paste into config.py
+     ⚠ Cost: ~$0.003 per job fulfilled (very cheap)
+
+
+STEP 3: Run the bot
+─────────────────────
+  python run.py
+
+
+STEP 4: Set up Fiverr gig (one-time, manual)
+──────────────────────────────────────────────
+  Create ONE gig on Fiverr in any of these categories:
+  • "I will write an SEO blog post"
+  • "I will write product descriptions"
+  • "I will write email copy"
+  Price: ₹400–₹2,000 per order
+
+  When you get an order, the bot auto-fulfills it using AI.
+  You just click Deliver.
+
+
+INCOME STREAMS:
+═══════════════
+  1. TRADING   — Bot trades NSE stocks automatically during market hours
+                 Strategy: EMA crossover + RSI (proven swing trading)
+                 Capital: ₹5,000 | Expected: ₹200–₹800/month (4–16% ROI)
+
+  2. FREELANCE — Bot scans Upwork every 15 min, saves proposals for jobs
+                 you can win with AI. AI writes the work, you deliver.
+                 Expected: ₹2,000–₹15,000/month depending on orders
+
+
+VIEW YOUR EARNINGS:
+═══════════════════
+  python dashboard.py
+
+
+IMPORTANT NOTES:
+════════════════
+  • Trading involves risk. Never invest money you cannot afford to lose.
+  • The bot uses 2% risk per trade (₹100 max loss per trade at ₹5,000 capital)
+  • Upwork proposals are saved to the /proposals/ folder for your review
+  • All activity is logged to moneybot_trading.log and moneybot_freelance.log
+
+═══════════════════════════════════════════════════════

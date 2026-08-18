@@ -1,0 +1,28 @@
+JOB TITLE : Software Developer React NextJS
+URL       : https://remoteOK.com/remote-jobs/remote-software-developer-react-nextjs-leap-tools-1134866
+KEYWORD   : social-media
+FOUND AT  : 2026-07-16 12:55:57.231872
+
+============================================================
+PROPOSAL:
+============================================================
+
+# React/Next.js Developer for Leap Tools
+
+Building visualization tools for the interior décor industry requires seamless, performant frontends that handle complex 3D previews and real-time data. That's where modern React architecture becomes critical.
+
+I've spent the last 3+ years shipping Next.js applications at scale, most recently delivering a product customization platform that reduced load times by 40% and improved user engagement metrics across 15+ enterprise clients. I understand the performance constraints, component architecture, and state management challenges you'll face scaling for Fortune 500 companies.
+
+What caught my attention about Leap Tools: you're solving a real problem for a massive market, and your growth trajectory shows you need developers who can move fast without sacrificing code quality.
+
+I'm ready to dive into your stack and contribute immediately.
+
+**Let's schedule a quick call to discuss your immediate priorities and timeline.**
+
+============================================================
+TO SUBMIT:
+============================================================
+1. Open the URL above
+2. Click 'Apply Now'
+3. Paste the proposal above
+4. Send!

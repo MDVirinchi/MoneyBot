@@ -1,0 +1,30 @@
+﻿2026-07-07 13:20:35,967 [MONEYBOT] INFO NEWS SIGNAL: WIPRO BEARISH | Global Market: Japan's Nikkei falls 2% as Samsung slump spar | confidence=0.85
+2026-07-07 13:20:35,968 [MONEYBOT] INFO NEWS SIGNAL: TCS BEARISH | Global Market: Japan's Nikkei falls 2% as Samsung slump spar | confidence=0.85
+2026-07-07 13:20:38,800 [MONEYBOT] INFO HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2026-07-07 13:20:38,802 [MONEYBOT] INFO NEWS SIGNAL: WIPRO BULLISH | Global Market: Japanese bond yields retreat after strong dem | confidence=0.65
+2026-07-07 13:20:38,803 [MONEYBOT] INFO NEWS SIGNAL: HDFC BULLISH | Global Market: Japanese bond yields retreat after strong dem | confidence=0.65
+2026-07-07 13:20:38,803 [MONEYBOT] INFO NEWS SIGNAL: INFY BULLISH | Global Market: Japanese bond yields retreat after strong dem | confidence=0.65
+2026-07-07 13:20:38,804 [MONEYBOT] INFO NEWS SIGNAL: ICICIBANK BULLISH | Global Market: Japanese bond yields retreat after strong dem | confidence=0.65
+2026-07-07 13:20:38,804 [MONEYBOT] INFO NEWS SIGNAL: TCS BULLISH | Global Market: Japanese bond yields retreat after strong dem | confidence=0.65
+2026-07-07 13:20:41,872 [MONEYBOT] INFO HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2026-07-07 13:20:45,819 [MONEYBOT] INFO HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2026-07-07 13:20:45,822 [MONEYBOT] INFO NEWS SIGNAL: SSNLINFRA BEARISH | Explained: Why did Samsung shares crash 10% even after tech  | confidence=0.85
+2026-07-07 13:20:49,007 [MONEYBOT] INFO HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2026-07-07 13:20:52,392 [MONEYBOT] INFO HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2026-07-07 13:20:52,394 [MONEYBOT] INFO NEWS SIGNAL: BANKEX BEARISH | Global Market: Euro zone inflation risks persist despite oil | confidence=0.70
+2026-07-07 13:20:52,395 [MONEYBOT] INFO NEWS SIGNAL: NIFTY50 BEARISH | Global Market: Euro zone inflation risks persist despite oil | confidence=0.70
+2026-07-07 13:20:52,395 [MONEYBOT] INFO NEWS SIGNAL: SENSEX BEARISH | Global Market: Euro zone inflation risks persist despite oil | confidence=0.70
+2026-07-07 13:20:54,988 [MONEYBOT] INFO HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2026-07-07 13:20:54,990 [MONEYBOT] INFO NEWS SIGNAL: CULTFIT BULLISH | Cult.fit IPO: Fitness company files draft IPO papers to rais | confidence=0.75
+2026-07-07 13:20:57,891 [MONEYBOT] INFO HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2026-07-07 13:20:57,894 [MONEYBOT] INFO NEWS SIGNAL: ADANIENT BULLISH | IIFL initiates coverage on Adani Power with target price at  | confidence=0.85
+2026-07-07 13:20:57,895 [MONEYBOT] INFO NEWS SIGNAL: ADANIPOWER BULLISH | IIFL initiates coverage on Adani Power with target price at  | confidence=0.85
+2026-07-07 13:21:01,471 [MONEYBOT] INFO HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2026-07-07 13:21:04,057 [MONEYBOT] INFO HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2026-07-07 13:21:07,517 [MONEYBOT] INFO HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2026-07-07 13:21:07,520 [MONEYBOT] INFO NEWS SIGNAL: 005930.KS BULLISH | What could shape Samsung's growth in the coming quarters? | confidence=0.85
+2026-07-07 13:21:07,521 [MONEYBOT] INFO NEWS SIGNAL: SSNLF BULLISH | What could shape Samsung's growth in the coming quarters? | confidence=0.85
+2026-07-07 13:21:10,156 [MONEYBOT] INFO HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2026-07-07 13:21:10,158 [MONEYBOT] INFO NEWS SIGNAL: RITES BULLISH | RITES shares soar 9% after bagging a $36 million locomotive  | confidence=0.85
+2026-07-07 13:21:13,174 [MONEYBOT] INFO HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2026-07-07 13:21:13,176 [MONEYBOT] INFO NEWS SIGNAL: SPACEX BULLISH | SpaceX set to join Nasdaq-100 today. Will index entry fuel i | confidence=0.85

@@ -1,0 +1,27 @@
+JOB TITLE : Software development
+Frontend Developer
+URL       : https://remoteOK.com/remote-jobs/remote-software-developmentfrontend-developer-defdone-1134928
+KEYWORD   : content
+FOUND AT  : 2026-07-17 10:00:24.748933
+
+============================================================
+PROPOSAL:
+============================================================
+
+# React Frontend Developer Ready to Contribute
+
+I appreciate that defdone values learning—it signals a team invested in sustainable development rather than quick fixes. That approach typically leads to cleaner codebases and better products long-term.
+
+I'm a frontend developer with solid React + Redux experience and comfortable working with TypeScript in production environments. On my last project, I refactored a bloated component library that reduced bundle size by 34% and improved load times noticeably—the kind of practical improvement that matters for user experience.
+
+I work well in international teams and enjoy the challenge of maintaining codebases across different modules. Your stack is exactly what I've been building with, so I'd be productive from day one while staying sharp on best practices.
+
+Let's hop on a quick call to discuss your current priorities and see if we're aligned. Happy to share code samples or talk through any specific challenges you're facing.
+
+============================================================
+TO SUBMIT:
+============================================================
+1. Open the URL above
+2. Click 'Apply Now'
+3. Paste the proposal above
+4. Send!

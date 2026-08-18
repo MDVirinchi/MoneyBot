@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="refresh" content="300">
+<title>MoneyBot — Operator Dashboard</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#0d0d0d;color:#ddd;padding:16px 20px;min-height:100vh}
+.topbar{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #1e1e1e;padding-bottom:12px;margin-bottom:16px}
+.title{font-size:15px;font-weight:600;color:#fff;letter-spacing:.2px}
+.subtitle{font-size:11px;color:#444;margin-top:3px}
+.em{padding:5px 14px;border-radius:4px;font-size:12px;font-weight:600;letter-spacing:.6px;border:1px solid #4caf5044;color:#4caf50;background:#4caf5011}
+.row3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px}
+.row4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px}
+.card{background:#161616;border:1px solid #202020;border-radius:8px;padding:14px 16px}
+.clabel{font-size:10px;color:#444;text-transform:uppercase;letter-spacing:.8px;margin-bottom:7px}
+.cval{font-size:22px;font-weight:600;line-height:1.1;color:#e0e0e0}
+.csub{font-size:12px;color:#444;margin-top:5px}
+.regime-card{background:#200e0e;border:1px solid #4a1a1a;border-radius:8px;padding:16px 18px}
+.regime-name{font-size:38px;font-weight:700;color:#e05252;letter-spacing:1px;line-height:1}
+.regime-desc{font-size:12px;color:#e0525277;margin-top:8px}
+.regime-days{font-size:11px;color:#e0525255;margin-top:6px}
+.section{font-size:10px;color:#333;text-transform:uppercase;letter-spacing:.8px;margin:0 0 8px 2px}
+.pos-wrap{background:#161616;border:1px solid #202020;border-radius:8px;overflow:hidden;margin-bottom:14px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+.th{padding:7px 12px;text-align:left;color:#333;font-size:10px;text-transform:uppercase;letter-spacing:.6px;font-weight:500;background:#111;border-bottom:1px solid #1e1e1e}
+.td{padding:9px 12px;border-bottom:1px solid #1a1a1a;color:#ccc;vertical-align:middle}
+.td-sym{padding:9px 12px;border-bottom:1px solid #1a1a1a;font-weight:600;color:#e8e8e8}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover td, tbody tr:hover .td-sym{background:#1a1a1a}
+.muted{color:#444;font-size:11px}
+.kill-row{background:#111;border:1px solid #1e1e1e;border-radius:8px;padding:10px 14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.kill-label{font-size:10px;color:#333;text-transform:uppercase;letter-spacing:.8px;margin-right:4px}
+.pill{padding:3px 10px;border-radius:4px;border:1px solid #2a2a2a;font-size:11px;font-weight:500;white-space:nowrap}
+.pill.ok{color:#1e4d24;border-color:#1a2e1c}
+.kill-msg{font-size:12px;margin-top:5px;padding-left:2px}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div>
+    <div class="title">MoneyBot RS60/EP40 &nbsp;&#183;&nbsp; Operator Dashboard</div>
+    <div class="subtitle">Paper day 32 &nbsp;&#183;&nbsp; Data: 2026-07-16 &nbsp;&#183;&nbsp; Generated: 2026-07-17 15:35 &nbsp;&#183;&nbsp; Auto-refresh 5 min</div>
+  </div>
+  <div class="em">&#10003; &nbsp;NOMINAL</div>
+</div>
+
+<div class="row3">
+
+  <div class="regime-card">
+    <div class="clabel" style="color:#e0525255">Regime &nbsp;(Policy C)</div>
+    <div class="regime-name">BEAR</div>
+    <div class="regime-desc">100% cash &mdash; no new entries permitted</div>
+    <div class="regime-days">17 consecutive days tracked in this regime</div>
+  </div>
+
+  <div class="card">
+    <div class="clabel">Distance to 200-DMA</div>
+    <div class="cval" style="color:#e05252;font-size:28px">751 <span style="font-size:15px;font-weight:400;color:#e0525288">pts</span></div>
+    <div class="csub">Nifty is <span style="color:#e05252">3.02%</span> below the 200-DMA</div>
+    <div style="margin-top:10px;font-size:11px;color:#2a2a2a;display:flex;gap:16px">
+      <span>Nifty <span style="color:#555">24,073</span></span>
+      <span>50-DMA <span style="color:#555">23,831</span></span>
+      <span>200-DMA <span style="color:#555">24,824</span></span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="clabel">Next rebalance</div>
+    <div class="cval" style="font-size:20px">27 Jul 2026</div>
+    <div class="csub">in 10 calendar days</div>
+    <div style="margin-top:10px;font-size:11px;color:#2a2a2a">
+      Completed trades: 0 &nbsp;&#183;&nbsp; No closed trades
+    </div>
+  </div>
+
+</div>
+
+<div class="row4">
+
+  <div class="card">
+    <div class="clabel">Portfolio value</div>
+    <div class="cval">Rs.5,000</div>
+    <div class="csub">Started Rs.5,000</div>
+  </div>
+
+  <div class="card">
+    <div class="clabel">Cash available</div>
+    <div class="cval">Rs.5,000</div>
+    <div class="csub">No open positions</div>
+  </div>
+
+  <div class="card">
+    <div class="clabel">Drawdown from peak</div>
+    <div class="cval" style="color:#aaa">0.0%</div>
+    <div class="csub">Peak Rs.5,000</div>
+  </div>
+
+  <div class="card">
+    <div class="clabel">Unrealized P&amp;L</div>
+    <div class="cval" style="color:#4caf50">Rs.0</div>
+    <div class="csub">0 open positions</div>
+  </div>
+
+</div>
+
+<div class="section">Open positions (0)</div>
+<div class="pos-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th class="th">Symbol</th>
+        <th class="th">Entry date</th>
+        <th class="th">Entry price</th>
+        <th class="th">Qty</th>
+        <th class="th">Current price</th>
+        <th class="th">Unrealized P&amp;L</th>
+        <th class="th">P&amp;L %</th>
+        <th class="th">Stop-loss</th>
+        <th class="th">Days held</th>
+      </tr>
+    </thead>
+    <tbody><tr><td colspan='9' class='td' style='text-align:center;color:#444;padding:20px'>No open positions — Bear regime. 100% cash.</td></tr></tbody>
+  </table>
+</div>
+
+<div class="section">Shadow Engine &mdash; Experimental (RS60/EP40 + 50-DMA regime, paper only)</div>
+<div style="background:#111;border:1px solid #1a1a2a;border-radius:8px;padding:14px 16px;margin-bottom:14px;display:grid;grid-template-columns:repeat(5,1fr);gap:12px">
+  <div>
+    <div class="clabel" style="color:#5566aa">Regime</div>
+    <div style="font-size:15px;font-weight:600;color:#7788cc">ACTIVE (50-DMA filter)</div>
+  </div>
+  <div>
+    <div class="clabel" style="color:#5566aa">Portfolio value</div>
+    <div style="font-size:15px;font-weight:600;color:#aabbdd">Rs.5,000</div>
+  </div>
+  <div>
+    <div class="clabel" style="color:#5566aa">Total PnL</div>
+    <div style="font-size:15px;font-weight:600;color:#4caf50">+Rs.0</div>
+  </div>
+  <div>
+    <div class="clabel" style="color:#5566aa">Return</div>
+    <div style="font-size:15px;font-weight:600;color:#4caf50">+0.00%</div>
+    <div style="font-size:10px;color:#334;margin-top:3px">vs prod +0.00% <span style="color:#4caf50">delta</span></div>
+  </div>
+  <div>
+    <div class="clabel" style="color:#5566aa">Trades / Win rate</div>
+    <div style="font-size:15px;font-weight:600;color:#aabbdd">0 trades</div>
+    <div style="font-size:11px;color:#5566aa;margin-top:3px">0.0% win rate</div>
+  </div>
+</div>
+<div style="font-size:11px;color:#445;margin:-8px 0 12px 2px;padding:6px 10px;background:#0e0e14;border-radius:4px;border-left:2px solid #334">&nbsp;SIMILAR PERFORMANCE — more data needed</div>
+
+<div class="kill-row">
+  <span class="kill-label">Kill switches</span>
+  <span class='pill ok'>K1 &#10003;</span><span class='pill ok'>K2 &#10003;</span><span class='pill ok'>K3 &#10003;</span><span class='pill ok'>K4 &#10003;</span><span class='pill ok'>K5 &#10003;</span><span class='pill ok'>K6 &#10003;</span>
+  <span class="muted" style="margin-left:6px;font-size:11px">All checks passed</span>
+</div>
+
+
+</body>
+</html>

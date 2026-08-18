@@ -1,0 +1,30 @@
+﻿2026-07-07 12:04:55,388 [TRADE] Available funds: Rs.5000.00 | Open positions: 0
+2026-07-07 12:06:08,216 [TRADE] News signals refreshed: 34 signals found
+2026-07-07 12:06:08,217 [TRADE] Active news signals: ['BANKEX:SELL', 'SENSEX:SELL', 'NIFTY50:SELL', 'CULTFIT:BUY', 'ADANIPOWER:BUY']
+2026-07-07 12:06:08,217 [TRADE] Scanning 62 stocks this cycle (12 news-prioritized)
+2026-07-07 12:08:08,956 [TRADE] Cycle done. Next scan in 30 min. Total PnL so far: Rs.0.00
+2026-07-07 12:13:39,305 [TRADE] Available funds: Rs.5000.00 | Open positions: 0
+2026-07-07 12:14:54,686 [TRADE] News signals refreshed: 25 signals found
+2026-07-07 12:14:54,687 [TRADE] Active news signals: ['SSNLINFRA:SELL', 'FINNIFTY:SELL', 'NIFTY50:SELL', 'SENSEX:SELL', 'CULTFIT:BUY']
+2026-07-07 12:14:54,687 [TRADE] Scanning 57 stocks this cycle (7 news-prioritized)
+2026-07-07 12:16:49,025 [TRADE] Cycle done. Next scan in 30 min. Total PnL so far: Rs.0.00
+2026-07-07 12:38:10,948 [TRADE] Available funds: Rs.5000.00 | Open positions: 0
+2026-07-07 12:39:30,513 [TRADE] News signals refreshed: 28 signals found
+2026-07-07 12:39:30,513 [TRADE] Active news signals: ['005930.KS:SELL', 'SSNLF:SELL', 'NIFTY50:SELL', 'SENSEX:SELL', 'BHARTIARTL:SELL']
+2026-07-07 12:39:30,514 [TRADE] Scanning 58 stocks this cycle (8 news-prioritized)
+2026-07-07 12:41:28,821 [TRADE] Cycle done. Next scan in 30 min. Total PnL so far: Rs.0.00
+2026-07-07 12:46:50,585 [TRADE] Available funds: Rs.5000.00 | Open positions: 0
+2026-07-07 12:48:04,214 [TRADE] News signals refreshed: 26 signals found
+2026-07-07 12:48:04,215 [TRADE] Active news signals: ['HDFC:BUY', 'NIFTY50:BUY', 'ICICIBANK:BUY', 'SBIN:BUY', 'BANKNIFTY:BUY']
+2026-07-07 12:48:04,215 [TRADE] Scanning 56 stocks this cycle (6 news-prioritized)
+2026-07-07 12:49:54,922 [TRADE] Cycle done. Next scan in 30 min. Total PnL so far: Rs.0.00
+2026-07-07 13:11:31,018 [TRADE] Available funds: Rs.5000.00 | Open positions: 0
+2026-07-07 13:12:45,444 [TRADE] News signals refreshed: 36 signals found
+2026-07-07 13:12:45,444 [TRADE] Active news signals: ['SBIN:BUY', 'HKEX:BUY', 'ADANIPORTS:BUY', 'ICICIBANK:BUY', 'HDFC:BUY']
+2026-07-07 13:12:45,445 [TRADE] Scanning 60 stocks this cycle (10 news-prioritized)
+2026-07-07 13:14:45,088 [TRADE] Cycle done. Next scan in 30 min. Total PnL so far: Rs.0.00
+2026-07-07 13:19:57,268 [TRADE] Available funds: Rs.5000.00 | Open positions: 0
+2026-07-07 13:21:13,177 [TRADE] News signals refreshed: 34 signals found
+2026-07-07 13:21:13,177 [TRADE] Active news signals: ['HINDPETRO:SELL', 'BPCL:SELL', 'IOCL:SELL', 'RELIANCE:SELL', 'OLAELECTRIC:SELL']
+2026-07-07 13:21:13,178 [TRADE] Scanning 59 stocks this cycle (9 news-prioritized)
+2026-07-07 13:23:09,185 [TRADE] Cycle done. Next scan in 30 min. Total PnL so far: Rs.0.00

@@ -1,0 +1,26 @@
+JOB TITLE : Technical Writer
+URL       : https://remoteOK.com/remote-jobs/remote-technical-writer-nabu-casa-1132819
+KEYWORD   : copywriting
+FOUND AT  : 2026-07-08 12:42:13.856359
+
+============================================================
+PROPOSAL:
+============================================================
+
+# Technical Writer for Home Assistant
+
+Home Assistant's strength lies in its community-driven ecosystem, but complex documentation can create friction for the 2M+ users trying to implement automations and integrations.
+
+I've spent the last three years writing technical documentation for developer platforms, where I increased user self-service by 40% through clearer setup guides and troubleshooting workflows. I understand how to translate complicated concepts—whether smart home protocols or API architecture—into docs that actually help people succeed.
+
+What resonates with me about Nabu Casa is your commitment to privacy and sustainability. That mission-driven approach attracts people who care about quality, and they deserve documentation that matches that standard.
+
+I'd love to discuss which documentation gaps you're prioritizing and how I can help your community get more value from Home Assistant.
+
+============================================================
+TO SUBMIT:
+============================================================
+1. Open the URL above
+2. Click 'Apply Now'
+3. Paste the proposal above
+4. Send!

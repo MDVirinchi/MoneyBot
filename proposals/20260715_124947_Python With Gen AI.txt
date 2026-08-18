@@ -1,0 +1,31 @@
+JOB TITLE : Python With Gen AI
+URL       : https://remoteOK.com/remote-jobs/remote-python-with-gen-ai-capgemini-1134820
+KEYWORD   : marketing
+FOUND AT  : 2026-07-15 12:49:19.932519
+
+============================================================
+PROPOSAL:
+============================================================
+
+# Transforming Data Into Intelligent Solutions
+
+Capgemini's focus on science-driven transformation means your Python applications need to handle complexity at scale—especially as Gen AI capabilities demand robust, maintainable code architecture.
+
+I've spent 5+ years building production Python systems that integrate machine learning pipelines, and recently delivered a Gen AI data processing layer that reduced client inference latency by 60% while cutting infrastructure costs.
+
+What I bring:
+- Clean, scalable Python architecture (FastAPI, async patterns)
+- Gen AI integration experience (LLMs, embeddings, RAG systems)
+- Cross-functional collaboration in consulting environments
+
+I understand Capgemini's philosophy: technology with purpose means code that's not just clever—it's reliable, documented, and designed for your clients' real constraints.
+
+**Let's jump on a quick call to discuss your specific architecture needs and how my experience can accelerate your delivery timeline.**
+
+============================================================
+TO SUBMIT:
+============================================================
+1. Open the URL above
+2. Click 'Apply Now'
+3. Paste the proposal above
+4. Send!

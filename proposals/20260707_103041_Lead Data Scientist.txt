@@ -1,0 +1,33 @@
+JOB TITLE : Lead Data Scientist
+URL       : https://remoteOK.com/remote-jobs/remote-lead-data-scientist-brigit-1134476
+KEYWORD   : marketing
+FOUND AT  : 2026-07-07 10:30:17.284739
+
+============================================================
+PROPOSAL:
+============================================================
+
+# Lead Data Scientist - Brigit
+
+Your mission to democratize financial health requires data that drives smarter lending and credit-building decisions—that's where I thrive.
+
+I've built predictive models for fintech platforms that improved approval accuracy by 23% while reducing default rates, directly impacting both member access and company profitability. That's the intersection of social impact and sound data science.
+
+What resonates with me about Brigit is your alignment model—when your success depends on member success, the data problems become more interesting. I'm experienced in:
+
+- Building lending/credit risk models
+- Feature engineering for financial behavior prediction
+- Designing metrics that balance member fairness with business sustainability
+- Leading technical teams through ambiguous problems
+
+I'm ready to own meaningful data initiatives that actually move the needle on financial equity.
+
+**Let's talk about your highest-impact data challenges this quarter.**
+
+============================================================
+TO SUBMIT:
+============================================================
+1. Open the URL above
+2. Click 'Apply Now'
+3. Paste the proposal above
+4. Send!

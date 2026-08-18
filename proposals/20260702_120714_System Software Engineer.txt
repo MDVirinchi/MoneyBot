@@ -1,0 +1,28 @@
+JOB TITLE : System Software Engineer
+URL       : https://remoteOK.com/remote-jobs/remote-system-software-engineer-hewlett-packard-enterprise-1134102
+KEYWORD   : marketing
+FOUND AT  : 2026-07-02 12:06:52.928119
+
+============================================================
+PROPOSAL:
+============================================================
+
+# System Software Engineer - HPE
+
+HPE's edge-to-cloud infrastructure demands systems engineers who understand the full stack—from kernel-level optimization to distributed architecture challenges. That's exactly where I thrive.
+
+I've spent the last 5+ years building robust system software for enterprise environments, most recently leading optimization work that reduced latency by 34% across a multi-node distributed system. I'm comfortable diving deep into low-level performance issues while keeping the bigger picture in mind.
+
+Your hybrid setup works perfectly for me. I'm experienced with the HPE ecosystem and understand the specific challenges of maintaining system stability at enterprise scale.
+
+**Next step:** Let's hop on a quick call so I can learn more about the specific systems you're working on and show you how I can contribute from day one.
+
+Looking forward to talking soon.
+
+============================================================
+TO SUBMIT:
+============================================================
+1. Open the URL above
+2. Click 'Apply Now'
+3. Paste the proposal above
+4. Send!

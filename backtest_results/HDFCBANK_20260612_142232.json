@@ -1,0 +1,1685 @@
+{
+  "symbol": "HDFCBANK",
+  "instrument": "NSE_EQ|INE040A01034",
+  "period_days": 59,
+  "interval": "30minute",
+  "candles_used": 730,
+  "run_at": "2026-06-12 14:22:32.326944",
+  "min_score": 0.4,
+  "regime_filter": false,
+  "total_trades": 54,
+  "win_rate_pct": 5.56,
+  "profit_factor": 0.023,
+  "expectancy_rs": -23.2,
+  "sharpe_ratio": -32.997,
+  "sortino_ratio": -13.985,
+  "calmar_ratio": -2.098,
+  "initial_capital": 5000.0,
+  "final_capital": 2665.5,
+  "net_pnl": -2334.5,
+  "net_pnl_pct": -46.69,
+  "cagr_pct": -97.96,
+  "max_drawdown_pct": 46.69,
+  "max_drawdown_abs": 2334.5,
+  "drawdown_recovery_bars": 681,
+  "avg_win_rs": 9.88,
+  "avg_loss_rs": 25.15,
+  "win_loss_ratio": 0.39,
+  "max_win_rs": 12.97,
+  "max_loss_rs": 47.09,
+  "streaks": {
+    "best_win_streak": 1,
+    "best_loss_streak": 44
+  },
+  "monthly_pnl": {
+    "2026-03": -117.6,
+    "2026-04": -383.77,
+    "2026-05": -470.21,
+    "2026-06": -266.96,
+    "end-of-": -14.5
+  },
+  "exit_reasons": {
+    "take_profit": 3,
+    "trailing_stop": 3,
+    "signal": 42,
+    "stop_loss": 5,
+    "other": 1
+  },
+  "total_costs_rs": 1122.74,
+  "trades": [
+    {
+      "entry": 751.0991755371094,
+      "exit": 780.7852756347656,
+      "qty": 1,
+      "pnl": 8.88,
+      "costs": 20.81,
+      "return_pct": 1.18,
+      "entry_time": "2026-03-23 15:00:00+05:30",
+      "exit_time": "2026-03-25 09:00:00+05:30",
+      "exit_reason": "TakeProfit@781.14",
+      "entry_score": 0.875,
+      "entry_signals": {
+        "ema_cross": "HOLD",
+        "heikin_ashi": "NEUTRAL",
+        "guppy": "NEUTRAL",
+        "rsi": 22.3,
+        "e21_slope": -0.00406,
+        "e21_concavity": 0.00564,
+        "large_move": {
+          "is_large_move": false,
+          "direction": "UP",
+          "magnitude": 0.03
+        }
+      },
+      "regime_bullish": true
+    },
+    {
+      "entry": 786.8205,
+      "exit": 778.5397756347656,
+      "qty": 1,
+      "pnl": -29.09,
+      "costs": 20.81,
+      "return_pct": -3.7,
+      "entry_time": "2026-03-25 10:00:00+05:30",
+      "exit_time": "2026-03-25 15:00:00+05:30",
+      "exit_reason": "TrailingStop@781.01",
+      "entry_score": 1.0,
+      "entry_signals": {
+        "ema_cross": "HOLD",
+        "heikin_ashi": "NEUTRAL",
+        "guppy": "NEUTRAL",
+        "rsi": 64.4,
+        "e21_slope": 0.00268,
+        "e21_concavity": -0.00116,
+        "large_move": {
+          "is_large_move": false,
+          "direction": "UP",
+          "magnitude": 2.07
+        }
+      },
+      "regime_bullish": true
+    },
+    {
+      "entry": 774.7464122314453,
+      "exit": 762.6716121826172,
+      "qty": 1,
+      "pnl": -32.86,
+      "costs": 20.79,
+      "return_pct": -4.24,
+      "entry_time": "2026-03-27 09:00:00+05:30",
+      "exit_time": "2026-03-27 09:00:00+05:30",
+      "exit_reason": "Signal:SELL(score=0.88)",
+      "entry_score": 1.0,
+      "entry_signals": {
+        "ema_cross": "HOLD",
+        "heikin_ashi": "NEUTRAL",
+        "guppy": "NEUTRAL",
+        "rsi": 57.6,
+        "e21_slope": 0.0013,
+        "e21_concavity": -0.00346,
+        "large_move": {
+          "is_large_move": false,
+          "direction": "UP",
+          "magnitude": 0.01
+        }
+      },
+      "regime_bullish": true
+    },
+    {
+      "entry": 762.3716755371094,
+      "exit": 744.009,
+      "qty": 1,
+      "pnl": -39.13,
+      "costs": 20.77,
+      "return_pct": -5.13,
+      "entry_time": "2026-03-27 14:30:00+05:30",
+      "exit_time": "2026-03-30 09:00:00+05:30",
+      "exit_reason": "StopLoss@747.12",
+      "entry_score": 0.636,
+      "entry_signals": {
+        "ema_cross": "HOLD",
+        "heikin_ashi": "NEUTRAL",
+        "guppy": "SELL",
+        "rsi": 38.7,
+        "e21_slope": -0.00222,
+        "e21_concavity": 0.00287,
+        "large_move": {
+          "is_large_move": false,
+          "direction": "UP",
+          "magnitude": 0.33
+        }
+      },
+      "regime_bullish": true
+    },
+    {
+      "entry": 746.8908244628906,
+      "exit": 742.2625,
+      "qty": 1,
+      "pnl": -25.4,
+      "costs": 20.77,
+      "return_pct": -3.4,
+      "entry_time": "2026-03-30 09:30:00+05:30",
+      "exit_time": "2026-03-30 09:30:00+05:30",
+      "exit_reason": "Signal:SELL(score=1.00)",
+      "entry_score": 0.636,
+      "entry_signals": {
+        "ema_cross": "HOLD",
+        "heikin_ashi": "NEUTRAL",
+        "guppy": "SELL",
+        "rsi": 38.2,
+        "e21_slope": -0.00231,
+        "e21_concavity": 0.00181,
+        "large_move": {
+          "is_large_move": false,
+          "direction": "UP",
+          "magnitude": 0.38
+        }
+      },
+      "regime_bullish": true
+    },
+    {
+      "entry": 748.7945877685547,
+      "exit": 729.3383878173828,
+      "qty": 1,
+      "pnl": -40.21,
+      "costs": 20.75,
+      "return_pct": -5.37,
+      "entry_time": "2026-04-01 10:00:00+05:30",
+      "exit_time": "2026-04-02 09:00:00+05:30",
+      "exit_reason": "StopLoss@733.82",
+      "entry_score": 0.727,
+      "entry_signals": {
+        "ema_cross": "HOLD",
+        "heikin_ashi": "NEUTRAL",
+        "guppy": "SELL",
+        "rsi": 51.6,
+        "e21_slope": -0.00099,
+        "e21_concavity": 0.00457,
+        "large_move": {
+          "is_large_move": false,
+          "direction": "UP",
+          "magnitude": 2.29
+        }
+      },
+      "regime_bullish": true
+    },
+    {
+      "entry": 732.2615877685547,
+      "exit": 730.8852756347657,
+      "qty": 1,
+      "pnl": -22.13,
+      "costs": 20.76,
+      "return_pct": -3.02,
+      "entry_time": "2026-04-02 09:30:00+05:30",
+      "exit_time": "2026-04-02 09:30:00+05:30",
+      "exit_reason": "Signal:SELL(score=1.00)",
+      "entry_score": 0.727,
+      "entry_signals": {
+        "ema_cross": "HOLD",
+        "heikin_ashi": "NEUTRAL",
+        "guppy": "SELL",
+        "rsi": 46.6,
+        "e21_slope": -0.0005,
+        "e21_concavity": -0.00057,
+        "large_move": {
+          "is_large_move": false,
+          "direction": "UP",
+          "magnitude": 0.1
+        }
+      },
+      "regime_bullish": true
+    },
+    {
+      "entry": 736.971,
+      "exit": 765.5657756347656,
+      "qty": 1,
+      "pnl": 7.8,
+      "costs": 20.79,
+      "return_pct": 1.06,
+      "entry_time": "2026-04-02 12:30:00+05:30",
+      "exit_time": "2026-04-06 13:00:00+05:30",
+      "exit_reason": "TakeProfit@766.45",
+      "entry_score": 0.667,
+      "entry_signals": {
+        "ema_cross": "HOLD",
+        "heikin_ashi": "NEUTRAL",
+        "guppy": "SELL",
+        "rsi": 42.7,
+        "e21_slope": -0.00189,
+        "e21_concavity": 0.00299,
+        "large_move": {
+          "is_large_move": false,
+          "direction": "UP",
+          "magnitude": 0.66
+        }
+      },
+      "regime_bullish": true
+    },
+    {
+      "entry": 768.1331755371094,
+      "exit": 766.8132756347657,
+      "qty": 1,
+      "pnl": -22.11,
+      "costs": 20.79,
+      "return_pct": -2.88,
+      "entry_time": "2026-04-07 10:00:00+05:30",
+      "exit_time": "2026-04-07 13:30:00+05:30",
+      "exit_reason": "Signal:SELL(score=0.64)",
+      "entry_score": 0.889,
+      "entry_signals": {
+        "ema_cross": "HOLD",
+        "heikin_ashi": "NEUTRAL",
+        "guppy": "NEUTRAL",
+        "rsi": 66.9,
+        "e21_slope": 0.00308,
+        "e21_concavity": -0.00339,
+        "large_move": {
+          "is_large_move": false,
+          "direction": "DOWN",
+          "magnitude": 0.48
+        }
+      },
+      "regime_bullish": true
+    },
+    {
+      "entry": 770.1873244628906,
+      "exit": 803.9887756347656,
+      "qty": 1,
+      "pnl": 12.97,
+      "costs": 20.83,
+      "return_pct": 1.68,
+      "entry_time": "2026-04-07 14:30:00+05:30",
+      "exit_time": "2026-04-08 09:00:00+05:30",
+      "exit_reason": "TakeProfit@800.99",
+      "entry_score": 1.0,
+      "entry_signals": {
+        "ema_cross": "HOLD",
+        "heikin_ashi": "NEUTRAL",
+        "guppy": "BUY",
+        "rsi": 62.7,
+        "e21_slope": 0.00141,
+        "e21_concavity": -0.00089,
+        "large_move": {
+          "is_large_move": false,
+          "direction": "UP",
+          "magnitude": 0.2
+        }
+      },
+      "regime_bullish": true
+    },
+    {
+      "entry": 808.8645,
+      "exit": 799.5477243652343,
+      "qty": 1,
+      "pnl": -30.14,
+      "costs": 20.83,
+      "return_pct": -3.73,
+      "entry_time": "2026-04-08 12:30:00+05:30",
+      "exit_time": "2026-04-09 09:30:00+05:30",
+      "exit_reason": "TrailingStop@804.94",
+      "entry_score": 0.889,
+      "entry_signals": {
+        "ema_cross": "HOLD",
+        "heikin_ashi": "NEUTRAL",
+        "guppy": "NEUTRAL",
+        "rsi": 76.3,
+        "e21_slope": 0.00638,
+        "e21_concavity": -0.00863,
+        "large_move": {
+          "is_large_move": false,
+          "direction": "DOWN",
+          "magnitude": 0.55
+        }
+      },
+      "regime_bullish": true
+    },
+    {
+      "entry": 802.7523244628907,
+      "exit": 801.7932243652343,
+      "qty": 1,
+      "pnl": -21.79,
+      "costs": 20.83,
+      "return_pct": -2.71,
+      "entry_time": "2026-04-09 10:00:00+05:30",
+      "exit_time": "2026-04-09 10:30:00+05:30",
+      "exit_reason": "Signal:SELL(score=0.88)",
+      "entry_score": 0.889,
+      "entry_signals": {
+        "ema_cross": "HOLD",
+        "heikin_ashi": "NEUTRAL",
+        "guppy": "NEUTRAL",
+        "rsi": 70.2,
+        "e21_slope": 0.00387,
+        "e21_concavity": -0.00479,
+        "large_move": {
+          "is_large_move": false,
+          "direction": "DOWN",
+          "magnitude": 0.76
+        }
+      },
+      "regime_bullish": true
+    },
+    {
+      "entry": 811.0188244628906,
+      "exit": 787.9708878173828,
+      "qty": 1,
+      "pnl": -43.86,
+      "costs": 20.82,
+      "return_pct": -5.41,
+      "entry_time": "2026-04-10 10:00:00+05:30",
+      "exit_time": "2026-04-13 09:00:00+05:30",
+      "exit_reason": "StopLoss@794.80",
+      "entry_score": 1.0,
+      "entry_signals": {
+        "ema_cross": "BUY",
+        "heikin_ashi": "NEUTRAL",
+        "guppy": "NEUTRAL",
+        "rsi": 61.6,
+        "e21_slope": 0.00078,
+        "e21_concavity": 0.00107,
+        "large_move": {
+          "is_large_move": false,
+          "direction": "UP",
+          "magnitude": 1.15
+        }
+      },
+      "regime_bullish": true
+    },
+    {
+      "entry": 791.1791755371094,
+      "exit": 790.1166121826171,
+      "qty": 1,
+      "pnl": -21.88,
+      "costs": 20.82,
+      "return_pct": -2.77,
+      "entry_time": "2026-04-13 09:30:00+05:30",
+      "exit_time": "2026-04-13 10:00:00+05:30",
+      "exit_reason": "Signal:SELL(score=0.56)",
+      "entry_score": 1.0,
+      "entry_signals": {
+        "ema_cross": "HOLD",
+        "heikin_ashi": "NEUTRAL",
+        "guppy": "BUY",
+        "rsi": 60.1,
+        "e21_slope": 0.0008,
+        "e21_concavity": -0.00117,
+        "large_move": {
+          "is_large_move": false,
+          "direction": "UP",
+          "magnitude": 0.19
+        }
+      },
+      "regime_bullish": true
+    },
+    {
+      "entry": 792.6821755371094,
+      "exit": 806.1345,
+      "qty": 1,
+      "pnl": -7.38,
+      "costs": 20.83,
+      "return_pct": -0.93,
+      "entry_time": "2026-04-13 13:00:00+05:30",
+      "exit_time": "2026-04-16 11:00:00+05:30",
+      "exit_reason": "Signal:SELL(score=0.88)",
+      "entry_score": 0.889,
+      "entry_signals": {
+        "ema_cross": "HOLD",
+        "heikin_ashi": "NEUTRAL",
+        "guppy": "NEUTRAL",
+        "rsi": 41.1,
+        "e21_slope": -0.00196,
+        "e21_concavity": 0.00288,
+        "large_move": {
+          "is_large_move": false,
+          "direction": "UP",
+          "magnitude": 0.37
+        }
+      },
+      "regime_bullish": true
+    },
+    {
+      "entry": 800.598,
+      "exit": 794.0087756347656,
+      "qty": 1,
+      "pnl": -27.41,
+      "costs": 20.82,
+      "return_pct": -3.42,
+      "entry_time": "2026-04-16 14:30:00+05:30",
+      "exit_time": "2026-04-20 10:00:00+05:30",
+      "exit_reason": "Signal:SELL(score=1.00)",
+      "entry_score": 0.889,
+      "entry_signals": {
+        "ema_cross": "HOLD",
+        "heikin_ashi": "NEUTRAL",
+        "guppy": "NEUTRAL",
+        "rsi": 42.1,
+        "e21_slope": -0.00147,
+        "e21_concavity": 0.00197,
+        "large_move": {
+          "is_large_move": false,
+          "direction": "UP",
+          "magnitude": 0.09
+        }
+      },
+      "regime_bullish": true
+    },
+    {
+      "entry": 802.9526755371094,
+      "exit": 804.9867756347656,
+      "qty": 1,
+      "pnl": -18.8,
+      "costs": 20.83,
+      "return_pct": -2.34,
+      "entry_time": "2026-04-21 09:30:00+05:30",
+      "exit_time": "2026-04-22 10:30:00+05:30",
+      "exit_reason": "Signal:SELL(score=0.88)",
+      "entry_score": 0.7,
+      "entry_signals": {
+        "ema_cross": "HOLD",
+        "heikin_ashi": "NEUTRAL",
+        "guppy": "SELL",
+        "rsi": 39.5,
+        "e21_slope": -0.00092,
+        "e21_concavity": 0.00141,
+        "large_move": {
+          "is_large_move": false,
+          "direction": "DOWN",
+          "magnitude": 0.05
+        }
+      },
+      "regime_bullish": true
+    },
+    {
+      "entry": 786.4698244628906,
+      "exit": 783.8791121826172,
+      "qty": 1,
+      "pnl": -23.4,
+      "costs": 20.81,
+      "return_pct": -2.98,
+      "entry_time": "2026-04-24 11:30:00+05:30",
+      "exit_time": "2026-04-24 14:30:00+05:30",
+      "exit_reason": "Signal:SELL(score=1.00)",
+      "entry_score": 0.667,
+      "entry_signals": {
+        "ema_cross": "HOLD",
+        "heikin_ashi": "NEUTRAL",
+        "guppy": "SELL",
+        "rsi": 41.1,
+        "e21_slope": -0.00141,
+        "e21_concavity": 0.00289,
+        "large_move": {
+          "is_large_move": false,
+          "direction": "UP",
+          "magnitude": 0.58
+        }
+      },
+      "regime_bullish": true
+    },
+    {
+      "entry": 790.077,
+      "exit": 786.3741121826172,
+      "qty": 1,
+      "pnl": -24.52,
+      "costs": 20.81,
+      "return_pct": -3.1,
+      "entry_time": "2026-04-27 09:00:00+05:30",
+      "exit_time": "2026-04-27 11:30:00+05:30",
+      "exit_reason": "Signal:SELL(score=0.58)",
+      "entry_score": 0.727,
+      "entry_signals": {
+        "ema_cross": "HOLD",
+        "heikin_ashi": "NEUTRAL",
+        "guppy": "SELL",
+        "rsi": 44.0,
+        "e21_slope": -0.00056,
+        "e21_concavity": 0.00076,
+        "large_move": {
+          "is_large_move": false,
+          "direction": "UP",
+          "magnitude": 0.24
+        }
+      },
+      "regime_bullish": true
+    },
+    {
+      "entry": 788.7744122314454,
+      "exit": 785.6754999999999,
+      "qty": 1,
+      "pnl": -23.91,
+      "costs": 20.81,
+      "return_pct": -3.03,
+      "entry_time": "2026-04-27 12:30:00+05:30",
+      "exit_time": "2026-04-27 12:30:00+05:30",
+      "exit_reason": "Signal:SELL(score=0.53)",
+      "entry_score": 0.727,
+      "entry_signals": {
+        "ema_cross": "HOLD",
+        "heikin_ashi": "NEUTRAL",
+        "guppy": "SELL",
+        "rsi": 49.7,
+        "e21_slope": -0.00016,
+        "e21_concavity": -0.0006,
+        "large_move": {
+          "is_large_move": false,
+          "direction": "UP",
+          "magnitude": 0.31
+        }
+      },
+      "regime_bullish": true
+    },
+    {
+      "entry": 793.0329122314453,
+      "exit": 783.929,
+      "qty": 1,
+      "pnl": -29.91,
+      "costs": 20.81,
+      "return_pct": -3.77,
+      "entry_time": "2026-04-27 14:00:00+05:30",
+      "exit_time": "2026-04-28 12:30:00+05:30",
+      "exit_reason": "Signal:SELL(score=0.94)",
+      "entry_score": 1.0,
+      "entry_signals": {
+        "ema_cross": "BUY",
+        "heikin_ashi": "NEUTRAL",
+        "guppy": "NEUTRAL",
+        "rsi": 54.2,
+        "e21_slope": 0.00029,
+        "e21_concavity": -9e-05,
+        "large_move": {
+          "is_large_move": false,
+          "direction": "UP",
+          "magnitude": 0.35
+        }
+      },
+      "regime_bullish": true
+    },
+    {
+      "entry": 788.2734122314453,
+      "exit": 761.973,
+      "qty": 1,
+      "pnl": -47.09,
+      "costs": 20.79,
+      "return_pct": -5.97,
+      "entry_time": "2026-04-29 11:00:00+05:30",
+      "exit_time": "2026-04-30 09:00:00+05:30",
+      "exit_reason": "StopLoss@772.51",
+      "entry_score": 0.727,
+      "entry_signals": {
+        "ema_cross": "HOLD",
+        "heikin_ashi": "NEUTRAL",
+        "guppy": "SELL",
+        "rsi": 47.4,
+        "e21_slope": -0.00023,
+        "e21_concavity": 0.00107,
+        "large_move": {
+          "is_large_move": false,
+          "direction": "UP",
+          "magnitude": 0.11
+        }
+      },
+      "regime_bullish": true
+    },
+    {
+      "entry": 772.4919122314453,
+      "exit": 773.2005,
+      "qty": 1,
+      "pnl": -20.09,
+      "costs": 20.8,
+      "return_pct": -2.6,
+      "entry_time": "2026-04-30 12:30:00+05:30",
+      "exit_time": "2026-05-04 13:30:00+05:30",
+      "exit_reason": "Signal:SELL(score=0.88)",
+      "entry_score": 0.636,
+      "entry_signals": {
+        "ema_cross": "HOLD",
+        "heikin_ashi": "NEUTRAL",
+        "guppy": "SELL",
+        "rsi": 32.0,
+        "e21_slope": -0.00276,
+        "e21_concavity": 0.00369,
+        "large_move": {
+          "is_large_move": false,
+          "direction": "UP",
+          "magnitude": 0.24
+        }
+      },
+      "regime_bullish": true
+    },
+    {
+      "entry": 773.2935,
+      "exit": 765.3162756347656,
+      "qty": 1,
+      "pnl": -28.77,
+      "costs": 20.79,
+      "return_pct": -3.72,
+      "entry_time": "2026-05-05 09:30:00+05:30",
+      "exit_time": "2026-05-05 10:30:00+05:30",
+      "exit_reason": "Signal:SELL(score=0.89)",
+      "entry_score": 0.727,
+      "entry_signals": {
+        "ema_cross": "HOLD",
+        "heikin_ashi": "NEUTRAL",
+        "guppy": "SELL",
+        "rsi": 52.3,
+        "e21_slope": -0.00021,
+        "e21_concavity": 0.00048,
+        "large_move": {
+          "is_large_move": false,
+          "direction": "UP",
+          "magnitude": 0.71
+        }
+      },
+      "regime_bullish": true
+    },
+    {
+      "entry": 774.1451755371094,
+      "exit": 775.9948878173828,
+      "qty": 1,
+      "pnl": -18.95,
+      "costs": 20.8,
+      "return_pct": -2.45,
+      "entry_time": "2026-05-05 13:30:00+05:30",
+      "exit_time": "2026-05-06 13:00:00+05:30",
+      "exit_reason": "Signal:SELL(score=0.88)",
+      "entry_score": 0.667,
+      "entry_signals": {
+        "ema_cross": "HOLD",
+        "heikin_ashi": "NEUTRAL",
+        "guppy": "SELL",
+        "rsi": 44.9,
+        "e21_slope": -0.00122,
+        "e21_concavity": 0.0021,
+        "large_move": {
+          "is_large_move": false,
+          "direction": "UP",
+          "magnitude": 0.58
+        }
+      },
+      "regime_bullish": true
+    },
+    {
+      "entry": 781.56,
+      "exit": 791.4638878173828,
+      "qty": 1,
+      "pnl": -10.91,
+      "costs": 20.82,
+      "return_pct": -1.4,
+      "entry_time": "2026-05-06 14:00:00+05:30",
+      "exit_time": "2026-05-07 12:00:00+05:30",
+      "exit_reason": "Signal:SELL(score=0.88)",
+      "entry_score": 1.0,
+      "entry_signals": {
+        "ema_cross": "HOLD",
+        "heikin_ashi": "NEUTRAL",
+        "guppy": "NEUTRAL",
+        "rsi": 54.3,
+        "e21_slope": 0.00039,
+        "e21_concavity": -0.00013,
+        "large_move": {
+          "is_large_move": false,
+          "direction": "UP",
+          "magnitude": 0.19
+        }
+      },
+      "regime_bullish": true
+    },
+    {
+      "entry": 797.592,
+      "exit": 782.931,
+      "qty": 1,
+      "pnl": -35.47,
+      "costs": 20.81,
+      "return_pct": -4.45,
+      "entry_time": "2026-05-07 13:00:00+05:30",
+      "exit_time": "2026-05-08 10:00:00+05:30",
+      "exit_reason": "Signal:SELL(score=0.67)",
+      "entry_score": 1.0,
+      "entry_signals": {
+        "ema_cross": "HOLD",
+        "heikin_ashi": "NEUTRAL",
+        "guppy": "BUY",
+        "rsi": 63.9,
+        "e21_slope": 0.00164,
+        "e21_concavity": -0.0014,
+        "large_move": {
+          "is_large_move": false,
+          "direction": "UP",
+          "magnitude": 0.16
+        }
+      },
+      "regime_bullish": true
+    },
+    {
+      "entry": 773.3936755371094,
+      "exit": 768.46,
+      "qty": 1,
+      "pnl": -25.73,
+      "costs": 20.79,
+      "return_pct": -3.33,
+      "entry_time": "2026-05-11 09:00:00+05:30",
+      "exit_time": "2026-05-11 10:30:00+05:30",
+      "exit_reason": "Signal:SELL(score=1.00)",
+      "entry_score": 0.667,
+      "entry_signals": {
+        "ema_cross": "HOLD",
+        "heikin_ashi": "NEUTRAL",
+        "guppy": "SELL",
+        "rsi": 41.1,
+        "e21_slope": -0.00116,
+        "e21_concavity": 0.00148,
+        "large_move": {
+          "is_large_move": false,
+          "direction": "UP",
+          "magnitude": 0.21
+        }
+      },
+      "regime_bullish": true
+    },
+    {
+      "entry": 771.9909122314453,
+      "exit": 754.8872243652344,
+      "qty": 1,
+      "pnl": -37.88,
+      "costs": 20.78,
+      "return_pct": -4.91,
+      "entry_time": "2026-05-11 13:30:00+05:30",
+      "exit_time": "2026-05-12 09:00:00+05:30",
+      "exit_reason": "StopLoss@756.55",
+      "entry_score": 0.636,
+      "entry_signals": {
+        "ema_cross": "HOLD",
+        "heikin_ashi": "NEUTRAL",
+        "guppy": "SELL",
+        "rsi": 35.6,
+        "e21_slope": -0.00152,
+        "e21_concavity": 0.00226,
+        "large_move": {
+          "is_large_move": false,
+          "direction": "UP",
+          "magnitude": 0.1
+        }
+      },
+      "regime_bullish": true
+    },
+    {
+      "entry": 757.9128244628906,
+      "exit": 753.7395,
+      "qty": 1,
+      "pnl": -24.95,
+      "costs": 20.78,
+      "return_pct": -3.29,
+      "entry_time": "2026-05-12 09:30:00+05:30",
+      "exit_time": "2026-05-12 09:30:00+05:30",
+      "exit_reason": "Signal:SELL(score=1.00)",
+      "entry_score": 0.875,
+      "entry_signals": {
+        "ema_cross": "HOLD",
+        "heikin_ashi": "NEUTRAL",
+        "guppy": "NEUTRAL",
+        "rsi": 28.8,
+        "e21_slope": -0.00189,
+        "e21_concavity": 0.00109,
+        "large_move": {
+          "is_large_move": false,
+          "direction": "DOWN",
+          "magnitude": 0.22
+        }
+      },
+      "regime_bullish": true
+    },
+    {
+      "entry": 757.3115877685547,
+      "exit": 752.0927756347656,
+      "qty": 1,
+      "pnl": -26.0,
+      "costs": 20.78,
+      "return_pct": -3.43,
+      "entry_time": "2026-05-12 12:30:00+05:30",
+      "exit_time": "2026-05-12 13:30:00+05:30",
+      "exit_reason": "Signal:SELL(score=1.00)",
+      "entry_score": 0.636,
+      "entry_signals": {
+        "ema_cross": "HOLD",
+        "heikin_ashi": "NEUTRAL",
+        "guppy": "SELL",
+        "rsi": 26.5,
+        "e21_slope": -0.00246,
+        "e21_concavity": 0.00338,
+        "large_move": {
+          "is_large_move": false,
+          "direction": "UP",
+          "magnitude": 0.02
+        }
+      },
+      "regime_bullish": true
+    },
+    {
+      "entry": 751.7505,
+      "exit": 747.6517243652344,
+      "qty": 1,
+      "pnl": -24.87,
+      "costs": 20.77,
+      "return_pct": -3.31,
+      "entry_time": "2026-05-13 11:00:00+05:30",
+      "exit_time": "2026-05-13 15:00:00+05:30",
+      "exit_reason": "Signal:SELL(score=0.88)",
+      "entry_score": 0.636,
+      "entry_signals": {
+        "ema_cross": "HOLD",
+        "heikin_ashi": "NEUTRAL",
+        "guppy": "SELL",
+        "rsi": 33.1,
+        "e21_slope": -0.00175,
+        "e21_concavity": 0.00182,
+        "large_move": {
+          "is_large_move": false,
+          "direction": "UP",
+          "magnitude": 0.14
+        }
+      },
+      "regime_bullish": true
+    },
+    {
+      "entry": 755.1071755371094,
+      "exit": 774.8472243652344,
+      "qty": 1,
+      "pnl": -1.06,
+      "costs": 20.8,
+      "return_pct": -0.14,
+      "entry_time": "2026-05-14 10:00:00+05:30",
+      "exit_time": "2026-05-15 12:30:00+05:30",
+      "exit_reason": "Signal:SELL(score=0.78)",
+      "entry_score": 0.727,
+      "entry_signals": {
+        "ema_cross": "HOLD",
+        "heikin_ashi": "NEUTRAL",
+        "guppy": "SELL",
+        "rsi": 45.6,
+        "e21_slope": -0.00094,
+        "e21_concavity": 0.00067,
+        "large_move": {
+          "is_large_move": false,
+          "direction": "UP",
+          "magnitude": 0.65
+        }
+      },
+      "regime_bullish": true
+    },
+    {
+      "entry": 774.546,
+      "exit": 768.2603878173828,
+      "qty": 1,
+      "pnl": -27.08,
+      "costs": 20.79,
+      "return_pct": -3.5,
+      "entry_time": "2026-05-15 14:00:00+05:30",
+      "exit_time": "2026-05-15 15:00:00+05:30",
+      "exit_reason": "Signal:SELL(score=0.64)",
+      "entry_score": 1.0,
+      "entry_signals": {
+        "ema_cross": "HOLD",
+        "heikin_ashi": "NEUTRAL",
+        "guppy": "NEUTRAL",
+        "rsi": 59.0,
+        "e21_slope": 0.00137,
+        "e21_concavity": -0.00107,
+        "large_move": {
+          "is_large_move": false,
+          "direction": "UP",
+          "magnitude": 0.06
+        }
+      },
+      "regime_bullish": true
+    },
+    {
+      "entry": 766.2294122314453,
+      "exit": 766.3142756347656,
+      "qty": 1,
+      "pnl": -20.71,
+      "costs": 20.79,
+      "return_pct": -2.7,
+      "entry_time": "2026-05-18 11:30:00+05:30",
+      "exit_time": "2026-05-19 09:00:00+05:30",
+      "exit_reason": "Signal:SELL(score=0.88)",
+      "entry_score": 0.667,
+      "entry_signals": {
+        "ema_cross": "HOLD",
+        "heikin_ashi": "NEUTRAL",
+        "guppy": "SELL",
+        "rsi": 44.3,
+        "e21_slope": -0.00188,
+        "e21_concavity": 0.00387,
+        "large_move": {
+          "is_large_move": false,
+          "direction": "UP",
+          "magnitude": 0.38
+        }
+      },
+      "regime_bullish": true
+    },
+    {
+      "entry": 768.3335877685547,
+      "exit": 765.9151121826172,
+      "qty": 1,
+      "pnl": -23.21,
+      "costs": 20.79,
+      "return_pct": -3.02,
+      "entry_time": "2026-05-19 11:30:00+05:30",
+      "exit_time": "2026-05-19 13:00:00+05:30",
+      "exit_reason": "Signal:SELL(score=0.50)",
+      "entry_score": 1.0,
+      "entry_signals": {
+        "ema_cross": "HOLD",
+        "heikin_ashi": "NEUTRAL",
+        "guppy": "NEUTRAL",
+        "rsi": 50.6,
+        "e21_slope": 4e-05,
+        "e21_concavity": 0.0004,
+        "large_move": {
+          "is_large_move": false,
+          "direction": "UP",
+          "magnitude": 0.04
+        }
+      },
+      "regime_bullish": true
+    },
+    {
+      "entry": 768.033,
+      "exit": 762.2723878173828,
+      "qty": 1,
+      "pnl": -26.55,
+      "costs": 20.79,
+      "return_pct": -3.46,
+      "entry_time": "2026-05-19 14:00:00+05:30",
+      "exit_time": "2026-05-19 14:30:00+05:30",
+      "exit_reason": "Signal:SELL(score=0.88)",
+      "entry_score": 1.0,
+      "entry_signals": {
+        "ema_cross": "HOLD",
+        "heikin_ashi": "NEUTRAL",
+        "guppy": "NEUTRAL",
+        "rsi": 49.3,
+        "e21_slope": -0.0003,
+        "e21_concavity": -0.00031,
+        "large_move": {
+          "is_large_move": false,
+          "direction": "UP",
+          "magnitude": 0.16
+        }
+      },
+      "regime_bullish": true
+    },
+    {
+      "entry": 760.5680877685547,
+      "exit": 757.4321121826172,
+      "qty": 1,
+      "pnl": -23.92,
+      "costs": 20.78,
+      "return_pct": -3.14,
+      "entry_time": "2026-05-20 12:00:00+05:30",
+      "exit_time": "2026-05-20 13:30:00+05:30",
+      "exit_reason": "Signal:SELL(score=1.00)",
+      "entry_score": 0.667,
+      "entry_signals": {
+        "ema_cross": "HOLD",
+        "heikin_ashi": "NEUTRAL",
+        "guppy": "SELL",
+        "rsi": 44.6,
+        "e21_slope": -0.00132,
+        "e21_concavity": 0.0016,
+        "large_move": {
+          "is_large_move": false,
+          "direction": "UP",
+          "magnitude": 0.64
+        }
+      },
+      "regime_bullish": true
+    },
+    {
+      "entry": 762.5720877685546,
+      "exit": 757.1826121826172,
+      "qty": 1,
+      "pnl": -26.17,
+      "costs": 20.78,
+      "return_pct": -3.43,
+      "entry_time": "2026-05-20 15:00:00+05:30",
+      "exit_time": "2026-05-21 12:00:00+05:30",
+      "exit_reason": "Signal:SELL(score=0.58)",
+      "entry_score": 0.727,
+      "entry_signals": {
+        "ema_cross": "HOLD",
+        "heikin_ashi": "NEUTRAL",
+        "guppy": "SELL",
+        "rsi": 46.4,
+        "e21_slope": -0.00049,
+        "e21_concavity": 0.00136,
+        "large_move": {
+          "is_large_move": false,
+          "direction": "UP",
+          "magnitude": 0.22
+        }
+      },
+      "regime_bullish": true
+    },
+    {
+      "entry": 762.2214122314454,
+      "exit": 765.2663878173828,
+      "qty": 1,
+      "pnl": -17.75,
+      "costs": 20.79,
+      "return_pct": -2.33,
+      "entry_time": "2026-05-21 15:00:00+05:30",
+      "exit_time": "2026-05-22 15:00:00+05:30",
+      "exit_reason": "Signal:SELL(score=0.88)",
+      "entry_score": 0.727,
+      "entry_signals": {
+        "ema_cross": "HOLD",
+        "heikin_ashi": "NEUTRAL",
+        "guppy": "SELL",
+        "rsi": 43.2,
+        "e21_slope": -0.00074,
+        "e21_concavity": 0.00132,
+        "large_move": {
+          "is_large_move": false,
+          "direction": "UP",
+          "magnitude": 0.17
+        }
+      },
+      "regime_bullish": true
+    },
+    {
+      "entry": 782.1110877685547,
+      "exit": 782.6316121826172,
+      "qty": 1,
+      "pnl": -20.29,
+      "costs": 20.81,
+      "return_pct": -2.59,
+      "entry_time": "2026-05-25 10:00:00+05:30",
+      "exit_time": "2026-05-26 13:00:00+05:30",
+      "exit_reason": "Signal:SELL(score=0.88)",
+      "entry_score": 0.917,
+      "entry_signals": {
+        "ema_cross": "HOLD",
+        "heikin_ashi": "NEUTRAL",
+        "guppy": "BUY",
+        "rsi": 73.4,
+        "e21_slope": 0.00239,
+        "e21_concavity": 1e-05,
+        "large_move": {
+          "is_large_move": false,
+          "direction": "UP",
+          "magnitude": 2.4
+        }
+      },
+      "regime_bullish": true
+    },
+    {
+      "entry": 760.5680877685547,
+      "exit": 751.494,
+      "qty": 1,
+      "pnl": -29.85,
+      "costs": 20.78,
+      "return_pct": -3.92,
+      "entry_time": "2026-05-29 11:00:00+05:30",
+      "exit_time": "2026-05-29 13:30:00+05:30",
+      "exit_reason": "Signal:SELL(score=1.00)",
+      "entry_score": 0.636,
+      "entry_signals": {
+        "ema_cross": "HOLD",
+        "heikin_ashi": "NEUTRAL",
+        "guppy": "SELL",
+        "rsi": 37.0,
+        "e21_slope": -0.00179,
+        "e21_concavity": 0.00293,
+        "large_move": {
+          "is_large_move": false,
+          "direction": "UP",
+          "magnitude": 0.08
+        }
+      },
+      "regime_bullish": true
+    },
+    {
+      "entry": 751.6001755371094,
+      "exit": 742.4122243652344,
+      "qty": 1,
+      "pnl": -29.96,
+      "costs": 20.77,
+      "return_pct": -3.99,
+      "entry_time": "2026-06-01 09:00:00+05:30",
+      "exit_time": "2026-06-01 10:00:00+05:30",
+      "exit_reason": "Signal:SELL(score=1.00)",
+      "entry_score": 0.636,
+      "entry_signals": {
+        "ema_cross": "HOLD",
+        "heikin_ashi": "NEUTRAL",
+        "guppy": "SELL",
+        "rsi": 34.3,
+        "e21_slope": -0.00149,
+        "e21_concavity": 0.0019,
+        "large_move": {
+          "is_large_move": false,
+          "direction": "DOWN",
+          "magnitude": 0.02
+        }
+      },
+      "regime_bullish": true
+    },
+    {
+      "entry": 745.6884122314453,
+      "exit": 738.7196121826172,
+      "qty": 1,
+      "pnl": -27.73,
+      "costs": 20.76,
+      "return_pct": -3.72,
+      "entry_time": "2026-06-01 12:00:00+05:30",
+      "exit_time": "2026-06-01 14:30:00+05:30",
+      "exit_reason": "Signal:SELL(score=1.00)",
+      "entry_score": 0.636,
+      "entry_signals": {
+        "ema_cross": "HOLD",
+        "heikin_ashi": "NEUTRAL",
+        "guppy": "SELL",
+        "rsi": 28.5,
+        "e21_slope": -0.00214,
+        "e21_concavity": 0.00301,
+        "large_move": {
+          "is_large_move": false,
+          "direction": "DOWN",
+          "magnitude": 0.07
+        }
+      },
+      "regime_bullish": true
+    },
+    {
+      "entry": 746.5901755371094,
+      "exit": 743.51,
+      "qty": 1,
+      "pnl": -23.85,
+      "costs": 20.77,
+      "return_pct": -3.19,
+      "entry_time": "2026-06-02 11:00:00+05:30",
+      "exit_time": "2026-06-03 09:30:00+05:30",
+      "exit_reason": "Signal:SELL(score=0.91)",
+      "entry_score": 0.667,
+      "entry_signals": {
+        "ema_cross": "HOLD",
+        "heikin_ashi": "NEUTRAL",
+        "guppy": "SELL",
+        "rsi": 41.1,
+        "e21_slope": -0.00184,
+        "e21_concavity": 0.00214,
+        "large_move": {
+          "is_large_move": false,
+          "direction": "UP",
+          "magnitude": 0.91
+        }
+      },
+      "regime_bullish": true
+    },
+    {
+      "entry": 746.8406755371094,
+      "exit": 749.5977756347656,
+      "qty": 1,
+      "pnl": -18.02,
+      "costs": 20.78,
+      "return_pct": -2.41,
+      "entry_time": "2026-06-03 12:00:00+05:30",
+      "exit_time": "2026-06-04 10:30:00+05:30",
+      "exit_reason": "Signal:SELL(score=0.88)",
+      "entry_score": 0.727,
+      "entry_signals": {
+        "ema_cross": "HOLD",
+        "heikin_ashi": "NEUTRAL",
+        "guppy": "SELL",
+        "rsi": 50.1,
+        "e21_slope": -0.00014,
+        "e21_concavity": 0.0003,
+        "large_move": {
+          "is_large_move": false,
+          "direction": "UP",
+          "magnitude": 0.32
+        }
+      },
+      "regime_bullish": true
+    },
+    {
+      "entry": 751.4499122314453,
+      "exit": 750.3462756347657,
+      "qty": 1,
+      "pnl": -21.88,
+      "costs": 20.78,
+      "return_pct": -2.91,
+      "entry_time": "2026-06-04 11:30:00+05:30",
+      "exit_time": "2026-06-05 12:00:00+05:30",
+      "exit_reason": "Signal:SELL(score=0.88)",
+      "entry_score": 1.0,
+      "entry_signals": {
+        "ema_cross": "HOLD",
+        "heikin_ashi": "NEUTRAL",
+        "guppy": "NEUTRAL",
+        "rsi": 53.9,
+        "e21_slope": 0.00032,
+        "e21_concavity": 0.0002,
+        "large_move": {
+          "is_large_move": false,
+          "direction": "UP",
+          "magnitude": 0.31
+        }
+      },
+      "regime_bullish": true
+    },
+    {
+      "entry": 741.1293244628906,
+      "exit": 738.3702756347657,
+      "qty": 1,
+      "pnl": -23.52,
+      "costs": 20.76,
+      "return_pct": -3.17,
+      "entry_time": "2026-06-08 13:00:00+05:30",
+      "exit_time": "2026-06-08 14:30:00+05:30",
+      "exit_reason": "Signal:SELL(score=1.00)",
+      "entry_score": 0.636,
+      "entry_signals": {
+        "ema_cross": "HOLD",
+        "heikin_ashi": "NEUTRAL",
+        "guppy": "SELL",
+        "rsi": 33.5,
+        "e21_slope": -0.00177,
+        "e21_concavity": 0.00214,
+        "large_move": {
+          "is_large_move": false,
+          "direction": "UP",
+          "magnitude": 0.16
+        }
+      },
+      "regime_bullish": true
+    },
+    {
+      "entry": 742.3818244628907,
+      "exit": 733.2306121826172,
+      "qty": 1,
+      "pnl": -29.91,
+      "costs": 20.76,
+      "return_pct": -4.03,
+      "entry_time": "2026-06-09 09:00:00+05:30",
+      "exit_time": "2026-06-09 11:30:00+05:30",
+      "exit_reason": "Signal:SELL(score=1.00)",
+      "entry_score": 0.667,
+      "entry_signals": {
+        "ema_cross": "HOLD",
+        "heikin_ashi": "NEUTRAL",
+        "guppy": "SELL",
+        "rsi": 41.6,
+        "e21_slope": -0.00113,
+        "e21_concavity": 0.00171,
+        "large_move": {
+          "is_large_move": false,
+          "direction": "UP",
+          "magnitude": 0.48
+        }
+      },
+      "regime_bullish": true
+    },
+    {
+      "entry": 740.6784122314453,
+      "exit": 739.4681121826172,
+      "qty": 1,
+      "pnl": -21.98,
+      "costs": 20.76,
+      "return_pct": -2.97,
+      "entry_time": "2026-06-09 13:00:00+05:30",
+      "exit_time": "2026-06-10 10:30:00+05:30",
+      "exit_reason": "Signal:SELL(score=0.92)",
+      "entry_score": 0.727,
+      "entry_signals": {
+        "ema_cross": "HOLD",
+        "heikin_ashi": "NEUTRAL",
+        "guppy": "SELL",
+        "rsi": 42.0,
+        "e21_slope": -0.00099,
+        "e21_concavity": 0.00149,
+        "large_move": {
+          "is_large_move": false,
+          "direction": "UP",
+          "magnitude": 0.27
+        }
+      },
+      "regime_bullish": true
+    },
+    {
+      "entry": 742.3818244628907,
+      "exit": 740.1667243652344,
+      "qty": 1,
+      "pnl": -22.98,
+      "costs": 20.77,
+      "return_pct": -3.1,
+      "entry_time": "2026-06-10 11:30:00+05:30",
+      "exit_time": "2026-06-11 09:00:00+05:30",
+      "exit_reason": "TrailingStop@742.10",
+      "entry_score": 1.0,
+      "entry_signals": {
+        "ema_cross": "BUY",
+        "heikin_ashi": "NEUTRAL",
+        "guppy": "NEUTRAL",
+        "rsi": 51.2,
+        "e21_slope": -0.00012,
+        "e21_concavity": -0.00071,
+        "large_move": {
+          "is_large_move": false,
+          "direction": "UP",
+          "magnitude": 0.45
+        }
+      },
+      "regime_bullish": true
+    },
+    {
+      "entry": 743.1333244628906,
+      "exit": 740.7655,
+      "qty": 1,
+      "pnl": -23.13,
+      "costs": 20.77,
+      "return_pct": -3.11,
+      "entry_time": "2026-06-11 09:30:00+05:30",
+      "exit_time": "2026-06-11 09:30:00+05:30",
+      "exit_reason": "Signal:SELL(score=0.88)",
+      "entry_score": 1.0,
+      "entry_signals": {
+        "ema_cross": "HOLD",
+        "heikin_ashi": "NEUTRAL",
+        "guppy": "NEUTRAL",
+        "rsi": 56.7,
+        "e21_slope": 0.00117,
+        "e21_concavity": -0.00207,
+        "large_move": {
+          "is_large_move": false,
+          "direction": "DOWN",
+          "magnitude": 0.23
+        }
+      },
+      "regime_bullish": true
+    },
+    {
+      "entry": 746.6403244628906,
+      "exit": 743.4102243652344,
+      "qty": 1,
+      "pnl": -24.0,
+      "costs": 20.77,
+      "return_pct": -3.21,
+      "entry_time": "2026-06-11 11:30:00+05:30",
+      "exit_time": "2026-06-11 14:30:00+05:30",
+      "exit_reason": "Signal:SELL(score=0.88)",
+      "entry_score": 1.0,
+      "entry_signals": {
+        "ema_cross": "HOLD",
+        "heikin_ashi": "NEUTRAL",
+        "guppy": "NEUTRAL",
+        "rsi": 49.8,
+        "e21_slope": 4e-05,
+        "e21_concavity": 0.00058,
+        "large_move": {
+          "is_large_move": false,
+          "direction": "DOWN",
+          "magnitude": 0.17
+        }
+      },
+      "regime_bullish": true
+    },
+    {
+      "entry": 761.6703244628907,
+      "exit": 767.961,
+      "qty": 1,
+      "pnl": -14.5,
+      "costs": 20.79,
+      "return_pct": -1.9,
+      "entry_time": "2026-06-12 10:00:00+05:30",
+      "exit_time": "end-of-period",
+      "exit_reason": "EndOfPeriod",
+      "entry_score": 1.0,
+      "entry_signals": {
+        "ema_cross": "HOLD",
+        "heikin_ashi": "NEUTRAL",
+        "guppy": "BUY",
+        "rsi": 64.3,
+        "e21_slope": 0.00115,
+        "e21_concavity": -2e-05,
+        "large_move": {
+          "is_large_move": false,
+          "direction": "UP",
+          "magnitude": 1.79
+        }
+      },
+      "regime_bullish": true
+    }
+  ],
+  "equity_curve": [
+    5000.0,
+    4987.274935955397,
+    4982.374911541335,
+    4989.074923748366,
+    4995.874911541335,
+    4995.374911541335,
+    4965.004819501207,
+    4973.754819501207,
+    4974.904843915269,
+    4967.304807294176,
+    4886.848683155225,
+    4886.848683155225,
+    4886.848683155225,
+    4865.350730209373,
+    4806.273436288477,
+    4782.268065732226,
+    4782.268065732226,
+    4782.268065732226,
+    4782.268065732226,
+    4754.547620136331,
+    4757.047620136331,
+    4760.997632343362,
+    4757.597668964456,
+    4679.873855829368,
+    4679.873855829368,
+    4660.427418122837,
+    4671.52745474393,
+    4669.327442536899,
+    4676.877430329868,
+    4682.877430329868,
+    4667.65122816974,
+    4667.65122816974,
+    4645.191564245106,
+    4647.441564245106,
+    4646.291539831043,
+    4607.34765120658,
+    4618.454712659983,
+    4618.454712659983,
+    4598.462331248795,
+    4602.362294627701,
+    4600.5123190417635,
+    4526.466648935655,
+    4526.466648935655,
+    4526.466648935655,
+    4526.466648935655,
+    4506.519819909257,
+    4504.769819909257,
+    4505.719832116289,
+    4504.41984432332,
+    4442.319117245623,
+    4420.668341585905,
+    4399.158830720771,
+    4403.95881851374,
+    4414.758806306709,
+    4418.3588429278025,
+    4417.6088429278025,
+    4418.1088429278025,
+    4417.5587940996775,
+    4419.258806306709,
+    4393.25937237349,
+    4393.25937237349,
+    4372.183739535459,
+    4372.583763949521,
+    4373.63375174249,
+    4372.63375174249,
+    4372.483727328427,
+    4366.333763949521,
+    4345.821125298861,
+    4325.340747894446,
+    4330.490772308509,
+    4334.540760101478,
+    4333.840747894446,
+    4327.640735687415,
+    4306.994764709818,
+    4306.994764709818,
+    4306.994764709818,
+    4306.994764709818,
+    4306.994764709818,
+    4306.994764709818,
+    4306.994764709818,
+    4306.994764709818,
+    4306.994764709818,
+    4286.797794830953,
+    4284.997807037984,
+    4263.565996279048,
+    4243.1617508295785,
+    4238.961738622547,
+    4175.083440532695,
+    4153.3731442517155,
+    4152.023168665778,
+    4152.6731930798405,
+    4147.473180872809,
+    4125.141194115278,
+    4125.141194115278,
+    4125.141194115278,
+    4101.840586451111,
+    4101.89057424408,
+    4097.39057424408,
+    4058.025325382611,
+    4058.025325382611,
+    4038.3067499731624,
+    4040.406786594256,
+    4048.206774387225,
+    4047.456774387225,
+    4045.406786594256,
+    4017.907386262944,
+    4017.907386262944,
+    3994.9872320512563,
+    3969.111763584815,
+    3947.339904453212,
+    3947.9898678321183,
+    3951.889892246181,
+    3953.9398800391496,
+    3951.039855625087,
+    3920.545037325085,
+    3922.3950129110226,
+    3919.545037325085,
+    3899.1901557505207,
+    3878.020651033552,
+    3877.6206266194895,
+    3843.691696707021,
+    3843.691696707021,
+    3843.691696707021,
+    3843.691696707021,
+    3820.371314674043,
+    3797.9363672181053,
+    3797.9363672181053,
+    3777.1188335072193,
+    3718.4861667905443,
+    3695.045898863732,
+    3673.458183845399,
+    3649.0229195037705,
+    3649.0229195037705,
+    3649.0229195037705,
+    3631.2964719044894,
+    3632.196496318552,
+    3630.096459697458,
+    3582.341511619171,
+    3590.9915360332334,
+    3599.9915360332334,
+    3605.091511619171,
+    3610.591511619171,
+    3609.291523826202,
+    3603.591511619171,
+    3561.5644346937997,
+    3535.9300815540482,
+    3535.9300815540482,
+    3514.1242466149124,
+    3522.47422220085,
+    3517.3742466149124,
+    3495.1957579245027,
+    3473.6356504401388,
+    3473.08566264717,
+    3428.998914093672,
+    3405.3827555399203,
+    3405.3827555399203,
+    3382.588415965306,
+    3361.4369768349015,
+    3339.5385925363503,
+    3343.388568122288,
+    3338.7386047433815,
+    3315.2378870996336,
+    3293.640202643529,
+    3302.9401904364977,
+    3301.4401904364977,
+    3304.590153815404,
+    3298.4901782294664,
+    3277.464897968652,
+    3260.3268273675694,
+    3258.5768273675694,
+    3258.926802953507,
+    3262.426802953507,
+    3265.0768273675694,
+    3263.8268273675694,
+    3237.1488071473836,
+    3237.1488071473836,
+    3237.1488071473836,
+    3237.1488071473836,
+    3237.1488071473836,
+    3237.1488071473836,
+    3237.1488071473836,
+    3215.554479779801,
+    3213.35446757277,
+    3187.271059236801,
+    3162.8949534936355,
+    3137.289152412764,
+    3115.725038345159,
+    3114.275026138128,
+    3089.530420674911,
+    3089.530420674911,
+    3067.7644633626833,
+    3075.8145121908083,
+    3073.7144755697145,
+    3069.664487776746,
+    3045.655326681746,
+    3025.138860727268,
+    3028.7388973483617,
+    3032.7888851413304,
+    3027.588872934299,
+    2986.9353524167536,
+    2987.4353524167536,
+    2989.9353524167536,
+    2991.0353890378474,
+    2988.385364623785,
+    2965.7054070364065,
+    2965.7054070364065,
+    2965.7054070364065,
+    2965.7054070364065,
+    2965.7054070364065,
+    2940.750525818853,
+    2898.0994841465463,
+    2896.5494963535775,
+    2872.221593674923,
+    2853.667652452318,
+    2851.217640245287,
+    2856.217640245287,
+    2808.763336030017,
+    2814.163299408923,
+    2817.513336030017,
+    2765.705407563342,
+    2744.0545612395294,
+    2731.3884776854447,
+    2725.838489892476,
+    2700.029644173573,
+    2677.28305429152,
+    2677.5830420844886,
+    2680.5830420844886,
+    2665.4995864299885
+  ]
+}

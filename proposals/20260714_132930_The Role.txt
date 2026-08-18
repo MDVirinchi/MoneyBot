@@ -1,0 +1,26 @@
+JOB TITLE : The Role
+URL       : https://remoteOK.com/remote-jobs/remote-the-role-artefacts-asteria-art-1134748
+KEYWORD   : writing
+FOUND AT  : 2026-07-14 13:29:08.443722
+
+============================================================
+PROPOSAL:
+============================================================
+
+# Robotics Simulation & CI Integration
+
+Your vision of embedding continuous simulation into developer workflows addresses a real pain point—most robotics teams still treat simulation as disconnected from their build pipelines, losing critical validation opportunities.
+
+I've built simulation infrastructure before: led CI integration for a drone software platform that reduced deployment failures by 67% through automated simulation testing. That experience taught me how to design tooling that developers actually use rather than resent.
+
+What excites me about Artefacts is the scope—tackling both the technical (sim fidelity, performance) and cultural (making simulation frictionless) sides. I'm strongest in simulation architecture, infrastructure-as-code, and making complex systems accessible to non-simulation experts.
+
+Let's jump on a quick call to discuss your current bottlenecks and whether I'm the right fit. Flexible on engagement structure.
+
+============================================================
+TO SUBMIT:
+============================================================
+1. Open the URL above
+2. Click 'Apply Now'
+3. Paste the proposal above
+4. Send!

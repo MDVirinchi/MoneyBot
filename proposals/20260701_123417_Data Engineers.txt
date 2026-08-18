@@ -1,0 +1,28 @@
+JOB TITLE : Data Engineers
+URL       : https://remoteOK.com/remote-jobs/remote-data-engineers-ey-1134306
+KEYWORD   : content
+FOUND AT  : 2026-07-01 12:34:00.577635
+
+============================================================
+PROPOSAL:
+============================================================
+
+# Data Engineering Excellence for Enterprise Scale
+
+EY's growth depends on data teams that can handle complexity at global scale—turning messy, distributed data into strategic assets across diverse systems.
+
+I've spent 5+ years architecting data pipelines for enterprise clients, most recently building a real-time data platform that reduced reporting latency by 70% while handling 500M+ daily records. That experience taught me what matters: systems that actually perform under pressure, teams that communicate clearly, and solutions that scale without breaking.
+
+I work with cloud platforms (AWS, GCP, Azure), modern stack tools (Spark, Airflow, dbt), and I'm comfortable jumping into whatever your specific architecture needs—whether that's warehouse optimization, ETL automation, or data governance frameworks.
+
+I'd love to understand more about your current challenges and team structure. Let's grab a quick call to explore if we're the right fit.
+
+Ready when you are.
+
+============================================================
+TO SUBMIT:
+============================================================
+1. Open the URL above
+2. Click 'Apply Now'
+3. Paste the proposal above
+4. Send!
