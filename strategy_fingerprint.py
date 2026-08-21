@@ -33,6 +33,10 @@ _FROZEN = {
     "REBAL_EVERY": 10,
     "PAPER_START": "2026-06-16",
     "UNIVERSE_SIZE": 136,
+    # Live execution capital — not a strategy parameter, but tracked here
+    # so a funding change is explicit and auditable (not a silent config drift).
+    "LIVE_CAPITAL": 11_500,
+    "LIVE_PER_POS": 1_150,
 }
 
 _FINGERPRINT_FILE = Path("strategy_fingerprint_history.json")
@@ -67,6 +71,8 @@ def assert_frozen():
             "PAPER_CAPITAL": ops.PAPER_CAPITAL,
             "PER_POS":     ops.PER_POS,
             "SLIP_MODEL":  ops.SLIP_MODEL,
+            "LIVE_CAPITAL": ops.LIVE_CAPITAL,
+            "LIVE_PER_POS": ops.LIVE_PER_POS,
         }
     except ImportError:
         return  # daily_ops_report not importable — skip live check

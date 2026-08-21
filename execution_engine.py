@@ -57,20 +57,38 @@ SL_CHECK_INTERVAL = 300  # 5 minutes
 SL_PCT = 0.10             # must match daily_ops_report.SL_PCT exactly
 
 
-# ── Single-instance lock (Windows file lock, not PID) ────────────────────────
+# ── Cross-platform file lock ──────────────────────────────────────────────────
+# msvcrt is Windows-only; fcntl is POSIX (Linux/macOS/Android proot).
+# Using platform detection so the same codebase runs on Windows (dev) and
+# Ubuntu proot on the phone (production).
+
+if sys.platform == "win32":
+    import msvcrt as _msvcrt
+    def _lock_fh(fh):
+        _msvcrt.locking(fh.fileno(), _msvcrt.LK_NBLCK, 1)
+    def _unlock_fh(fh):
+        fh.seek(0)
+        _msvcrt.locking(fh.fileno(), _msvcrt.LK_UNLCK, 1)
+else:
+    import fcntl as _fcntl
+    def _lock_fh(fh):
+        _fcntl.flock(fh.fileno(), _fcntl.LOCK_EX | _fcntl.LOCK_NB)
+    def _unlock_fh(fh):
+        _fcntl.flock(fh.fileno(), _fcntl.LOCK_UN)
+
+
+# ── Single-instance lock ──────────────────────────────────────────────────────
 
 _lock_handle = None
 
 def acquire_lock():
-    """Prevent two copies from running simultaneously.
-    Uses Windows file locking (msvcrt.locking) — not PID files.
-    If the process dies, Windows releases the lock automatically.
-    No stale lock files, no PID reuse false positives."""
+    """Prevent two copies from running simultaneously (cross-platform).
+    On Windows uses msvcrt.locking; on Linux/macOS uses fcntl.flock.
+    If the process dies, the OS releases the lock automatically."""
     global _lock_handle
     try:
         _lock_handle = open(LOCK_FILE, "w")
-        import msvcrt
-        msvcrt.locking(_lock_handle.fileno(), msvcrt.LK_NBLCK, 1)
+        _lock_fh(_lock_handle)
         _lock_handle.write(str(os.getpid()))
         _lock_handle.flush()
         log.info(f"Lock acquired (PID {os.getpid()})")
@@ -82,9 +100,7 @@ def release_lock():
     global _lock_handle
     if _lock_handle:
         try:
-            import msvcrt
-            _lock_handle.seek(0)
-            msvcrt.locking(_lock_handle.fileno(), msvcrt.LK_UNLCK, 1)
+            _unlock_fh(_lock_handle)
             _lock_handle.close()
         except Exception:
             pass
@@ -183,6 +199,18 @@ def pre_market_health_check(client):
     # 4. Config has required fields
     if not config.UPSTOX_ACCESS_TOKEN:
         errors.append("UPSTOX_ACCESS_TOKEN is empty")
+
+    # 4b. Capital consistency: broker balance vs configured LIVE_CAPITAL
+    try:
+        from daily_ops_report import LIVE_CAPITAL
+        if available > 0 and abs(available - LIVE_CAPITAL) / LIVE_CAPITAL > 0.30:
+            log.warning(
+                f"CAPITAL MISMATCH: broker has Rs.{available:,.0f} but "
+                f"LIVE_CAPITAL={LIVE_CAPITAL:,}. "
+                f"Update LIVE_CAPITAL in daily_ops_report.py if balance changed."
+            )
+    except Exception:
+        pass
 
     # 5. Time check — are we near market hours?
     now = datetime.now()

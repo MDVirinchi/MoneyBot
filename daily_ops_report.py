@@ -29,9 +29,15 @@ RS_WINDOW   = 63   # bars
 EP_WINDOW   = 63   # bars
 EP_RET_MIN  = 0.02
 EP_VOL_MULT = 1.5
-PAPER_CAPITAL = 5_000
-PER_POS       = 500
-SLIP_MODEL    = 0.002  # 0.20% each way
+PAPER_CAPITAL = 5_000   # paper-sim display only — DO NOT change (fingerprint locked)
+PER_POS       = 500     # paper-sim display only — DO NOT change (fingerprint locked)
+SLIP_MODEL    = 0.002   # 0.20% each way
+
+# ── Live execution capital (update when Upstox balance changes) ───────────────
+# LIVE_CAPITAL drives actual order sizing in the ops_log buys list.
+# Change this when you fund/withdraw from Upstox — it is NOT a strategy parameter.
+LIVE_CAPITAL  = 11_500
+LIVE_PER_POS  = LIVE_CAPITAL // TOP_N   # = 1_150 per position
 
 # AUTHORITATIVE universe from final_validation.py (136 stocks).
 # Must match the backtest exactly — do not modify.
@@ -207,12 +213,14 @@ def fetch_and_score(nifty_closes):
     return df, skipped
 
 # ── 3. SLIPPAGE MODEL ────────────────────────────────────────────────────────
-def slippage_baseline(top10_df):
+def slippage_baseline(top10_df, per_pos=None):
+    if per_pos is None:
+        per_pos = LIVE_PER_POS
     rows = []
     for _, r in top10_df.iterrows():
         buy_price   = r["price"]
         sim_fill    = buy_price * (1 + SLIP_MODEL)
-        qty         = int(PER_POS / sim_fill)
+        qty         = int(per_pos / sim_fill)
         actual_cost = sim_fill * qty
         brokerage   = 20                               # Rs.20 flat each way
         exchange    = 0.0000345 * actual_cost * 2     # both legs
@@ -284,6 +292,16 @@ def main():
     print(f"  50DMA > 200DMA : {'YES' if reg['dma50']>reg['dma200'] else 'NO'}")
     print(f"  Nifty > 200DMA : {'YES' if reg['close']>reg['dma200'] else 'NO'}")
     print(f"  REGIME         : *** {reg['regime']} ***")
+    print()
+    print(f"  ┌─ REGIME DECISION BLOCK ──────────────────────────────────────────┐")
+    print(f"  │  Nifty Close   {reg['close']:>10,.2f}                                    │")
+    print(f"  │  50-DMA        {reg['dma50']:>10,.2f}                                    │")
+    print(f"  │  200-DMA       {reg['dma200']:>10,.2f}                                    │")
+    print(f"  │  Price > 200DMA  {'YES ✓' if reg['close'] > reg['dma200'] else 'NO ✗ ':<6}  Gap: {abs(reg['dma200']-reg['close']):>7,.0f} pts   │")
+    print(f"  │  50DMA > 200DMA  {'YES ✓' if reg['dma50'] > reg['dma200'] else 'NO ✗ ':<6}  Gap: {abs(reg['dma200']-reg['dma50']):>7,.0f} pts   │")
+    print(f"  │  Policy-C Rule   {'BULL/FLAT → trade' if reg['regime'] != 'BEAR' else 'BEAR → 100% CASH, NO BUY':<35}│")
+    print(f"  │  BUYING BLOCKED  {'NO' if reg['regime'] != 'BEAR' else 'YES — waiting for Nifty > {:.0f} (200DMA)'.format(reg['dma200']):<35}│")
+    print(f"  └───────────────────────────────────────────────────────────────────┘")
 
     # Populated inside BULL/FLAT branch; stay empty in BEAR so JSON log can reference them
     top10   = pd.DataFrame()
@@ -416,6 +434,44 @@ def main():
             print(f"    {r['symbol']}: fill at actual open, qty {r['qty']}, SL={r['sl_level']:,.2f}")
         print("  Slippage_Tracker — log every buy order with prev close vs actual fill.")
         print("  Rebalance_Log  — log today as Rebal #1 after fills confirmed.")
+
+    # ── WHY NO TRADE? — Pipeline transparency report ─────────────────────────
+    print("\n[X] WHY NO TRADE? — CANDIDATE PIPELINE SUMMARY")
+    print("-" * 55)
+    universe_size   = len(STOCKS)
+    scored_count    = len(top10) + (len(df) - len(top10) if not top10.empty and not df.empty else 0) if not top10.empty else 0
+    # Reconstruct full scored df from fetch_and_score if available (only in BULL/FLAT)
+    _df_full = df if not top10.empty else pd.DataFrame()
+    _passed_dma = len(_df_full[_df_full["above_50dma"]]) if not _df_full.empty else 0
+    _top_n      = len(top10)
+    _buys_gen   = len(buys) if rebal_due else 0
+    _blocked_cap = sum(1 for b in buys if b.get("qty", 0) == 0) if buys else 0
+    _orders_out  = sum(1 for b in buys if b.get("qty", 1) > 0) if buys else 0
+
+    _regime_ok  = reg["regime"] != "BEAR"
+    _rebal_ok   = rebal_due
+
+    print(f"  Universe (total stocks tracked) : {universe_size}")
+    if _df_full.empty:
+        print(f"  Data fetched & scored          : — (BEAR regime, skipped)")
+    else:
+        print(f"  Data fetched & scored          : {len(_df_full)}")
+        print(f"  Passed 50-DMA filter           : {_passed_dma}")
+        print(f"  Top-{TOP_N} selected                : {_top_n}")
+    print(f"  Regime allows entry            : {'YES' if _regime_ok else 'NO  ← BLOCKED HERE (Policy-C BEAR)'}")
+    print(f"  Rebalance due today            : {'YES' if _rebal_ok else f'NO  ← BLOCKED HERE (next rebal in ~{days_to_rebal} trading days)'}")
+    print(f"  BUY orders generated           : {_buys_gen}")
+    if _buys_gen > 0:
+        print(f"  Orders with qty > 0            : {_orders_out}")
+        print(f"  Orders rejected (qty=0, price  : {_blocked_cap}")
+        print(f"       exceeds LIVE_PER_POS={LIVE_PER_POS})")
+    print(f"  Orders submitted to broker     : {'0 (dry-run/paper)' if _orders_out == 0 else str(_orders_out)}")
+    if not _regime_ok:
+        gap = reg['dma200'] - reg['close']
+        print(f"\n  *** Entry will resume when Nifty reclaims {reg['dma200']:,.0f} (200DMA).")
+        print(f"  *** Current gap: {gap:,.0f} pts ({gap/reg['close']*100:.1f}% away).")
+    elif not _rebal_ok:
+        print(f"\n  *** Regime is {reg['regime']} — next entry window in ~{days_to_rebal} trading days.")
 
     print("\n" + sep)
     print("REPORT COMPLETE. No strategy parameters modified.")
