@@ -1,546 +1,439 @@
+#!/usr/bin/env python3
 """
-MoneyBot RS60/EP40 - Operator Dashboard
-Reads: ops_log_*.json + MoneyBot_PaperTrading_Package.xlsx
-Output: dashboard.html opened in browser. Auto-refreshes every 5 min.
+dashboard.py — MoneyBot PC Kitchen Dashboard
+Live web UI showing regime, pipeline, candidates, positions, and log tail.
 
-Run after daily_ops_report.py: python dashboard.py
+Usage:
+  python dashboard.py
+
+Opens http://localhost:8878 automatically in your browser.
+Auto-refreshes every 30 seconds. Start/stop the bot from the browser.
 """
 
-import sys, io
-sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
-
-import json, glob, os, webbrowser, csv
+import os, sys, json, subprocess, threading, webbrowser
+from http.server import HTTPServer, BaseHTTPRequestHandler
 from datetime import date, datetime
 from pathlib import Path
 
-try:
-    import openpyxl
-except ImportError:
-    print("openpyxl not found. Run: pip install openpyxl")
-    sys.exit(1)
+PORT    = 8878
+BOT_DIR = Path(__file__).parent
 
-BASE          = os.path.dirname(os.path.abspath(__file__))
-WORKBOOK      = os.path.join(BASE, "MoneyBot_PaperTrading_Package.xlsx")
-try:
-    import config as _cfg
-    PAPER_CAPITAL = getattr(_cfg, "TRADING_CAPITAL_INR", 5_000)
-except Exception:
-    PAPER_CAPITAL = 5_000
-PAPER_START   = date(2026, 6, 16)
+bot_process = None
+bot_lock    = threading.Lock()
 
-# ── 1. OPS LOGS ──────────────────────────────────────────────────────────────
-def load_ops_logs():
-    files = sorted(glob.glob(os.path.join(BASE, "ops_log_*.json")))
-    logs = []
-    for f in files:
+
+# ── Bot helpers ───────────────────────────────────────────────────────────────
+
+def bot_running():
+    with bot_lock:
+        return bot_process is not None and bot_process.poll() is None
+
+def start_bot(dry_run=False):
+    global bot_process
+    log_path = BOT_DIR / "dashboard_run.log"
+    with open(log_path, "a") as log:
+        with bot_lock:
+            cmd = [sys.executable, str(BOT_DIR / "auto_daily.py")]
+            if dry_run:
+                cmd.append("--dry-run")
+            bot_process = subprocess.Popen(cmd, stdout=log, stderr=log, cwd=str(BOT_DIR))
+
+def stop_bot():
+    global bot_process
+    with bot_lock:
+        if bot_process and bot_process.poll() is None:
+            bot_process.terminate()
+            try:
+                bot_process.wait(timeout=5)
+            except subprocess.TimeoutExpired:
+                bot_process.kill()
+            bot_process = None
+
+
+# ── Kitchen data ──────────────────────────────────────────────────────────────
+
+def get_kitchen_data():
+    data = {"generated": datetime.now().strftime("%H:%M:%S"), "bot_running": bot_running()}
+
+    ops_path = BOT_DIR / f"ops_log_{date.today()}.json"
+    if ops_path.exists():
         try:
-            with open(f) as fh:
-                logs.append(json.load(fh))
-        except Exception:
-            pass
-    return logs
+            data["ops"] = json.loads(ops_path.read_text(encoding="utf-8"))
+        except Exception as e:
+            data["ops"] = None
+            data["ops_error"] = str(e)
+    else:
+        data["ops"] = None
+        data["ops_missing"] = f"No ops log yet for today ({ops_path.name}). Run the bot first."
 
-# ── 2. WORKBOOK ───────────────────────────────────────────────────────────────
-def load_workbook():
-    result = {
-        "positions": [], "trades": [],
-        "rebalance_dates": [], "daily_log": [],
-    }
-    if not os.path.exists(WORKBOOK):
-        return result
-    try:
-        wb = openpyxl.load_workbook(WORKBOOK, data_only=True)
-    except Exception as e:
-        print(f"WARNING: workbook error: {e}")
-        return result
+    state_path = BOT_DIR / "execution_state.json"
+    data["state"] = json.loads(state_path.read_text(encoding="utf-8")) if state_path.exists() else {}
 
-    # Position_Log: row 3 = header, rows 4+ = data then summary footer.
-    # Real position rows have a datetime in col B (Entry Date).
-    if "Position_Log" in wb.sheetnames:
-        ws = wb["Position_Log"]
-        for row in ws.iter_rows(min_row=4, values_only=True):
-            if not isinstance(row[1], datetime):
-                continue
-            result["positions"].append({
-                "symbol":    str(row[0]) if row[0] else "?",
-                "entry_date": row[1].date() if row[1] else None,
-                "entry_px":  row[2],
-                "qty":       row[3],
-                "sl":        row[4],
-                "current":   row[5],
-                "unrealized": row[6],
-                "pnl_pct":   row[7],
-                "days_held": row[8],
-                "alloc":     row[9],
-            })
-
-    # Trade_Log: row 3 = header, rows 4+
-    if "Trade_Log" in wb.sheetnames:
-        ws = wb["Trade_Log"]
-        for row in ws.iter_rows(min_row=4, values_only=True):
-            if row[1] is None:
-                continue
-            result["trades"].append({
-                "symbol":  row[1],
-                "net_pnl": row[9],
-                "win":     row[13],
-            })
-
-    # Rebalance_Log: col B (index 1) has the rebalance dates
-    if "Rebalance_Log" in wb.sheetnames:
-        ws = wb["Rebalance_Log"]
-        for row in ws.iter_rows(min_row=4, values_only=True):
-            d = row[1]
-            if isinstance(d, datetime):
-                result["rebalance_dates"].append(d.date())
-
-    # Daily_Ops_Log: col B=date, col H=portfolio value (index 7)
-    if "Daily_Ops_Log" in wb.sheetnames:
-        ws = wb["Daily_Ops_Log"]
-        for row in ws.iter_rows(min_row=4, values_only=True):
-            d = row[1]
-            if not isinstance(d, datetime):
-                continue
-            pv = row[7]
-            result["daily_log"].append({
-                "date":      d.date(),
-                "portfolio": pv if isinstance(pv, (int, float)) else None,
-            })
-
-    return result
-
-# ── 2b. SHADOW DATA ───────────────────────────────────────────────────────────
-def load_shadow_data():
-    result = {"regime": "UNKNOWN", "positions": 0, "pnl": 0.0,
-              "portfolio_value": PAPER_CAPITAL, "return_pct": 0.0,
-              "trades": 0, "wins": 0, "win_rate": 0.0,
-              "comparison_verdict": "", "comparison_delta": 0.0}
-    state_file = Path(BASE) / "shadow_state.json"
-    if state_file.exists():
+    summary_path = BOT_DIR / "daily_summary.json"
+    if summary_path.exists():
         try:
-            state = json.loads(state_file.read_text(encoding="utf-8"))
-            positions = state.get("positions", {})
-            invested = sum(p.get("entry", 0) * p.get("qty", 0) for p in positions.values())
-            pv = state.get("cash", float(PAPER_CAPITAL)) + invested
-            result["positions"]       = len(positions)
-            result["pnl"]             = round(state.get("pnl", 0), 2)
-            result["portfolio_value"] = round(pv, 2)
-            result["return_pct"]      = round((pv - PAPER_CAPITAL) / PAPER_CAPITAL * 100, 2)
+            data["recent_summaries"] = json.loads(summary_path.read_text(encoding="utf-8"))[-5:]
         except Exception:
-            pass
-    journal_file = Path(BASE) / "shadow_journal.csv"
-    if journal_file.exists():
+            data["recent_summaries"] = []
+    else:
+        data["recent_summaries"] = []
+
+    log_file = BOT_DIR / "auto_daily.log"
+    if log_file.exists():
         try:
-            rows = list(csv.DictReader(open(journal_file, encoding="utf-8")))
-            wins = sum(1 for r in rows if float(r.get("net_pnl", 0) or 0) > 0)
-            result["trades"]   = len(rows)
-            result["wins"]     = wins
-            result["win_rate"] = round(wins / len(rows) * 100, 1) if rows else 0.0
+            lines = log_file.read_text(encoding="utf-8", errors="replace").splitlines()
+            data["log_tail"] = lines[-50:]
         except Exception:
-            pass
-    comp_file = Path(BASE) / "comparison_log.json"
-    if comp_file.exists():
-        try:
-            history = json.loads(comp_file.read_text(encoding="utf-8"))
-            if history:
-                last = history[-1]
-                result["comparison_verdict"] = last.get("verdict", "")
-                result["comparison_delta"]   = last.get("delta", {}).get("return_pct", 0.0)
-                result["regime"]             = last.get("shadow", {}).get("regime", "UNKNOWN")
-        except Exception:
-            pass
-    return result
+            data["log_tail"] = []
+    else:
+        data["log_tail"] = []
 
-# ── 3. METRICS ────────────────────────────────────────────────────────────────
-def compute(logs, wb):
-    today = date.today()
-    if not logs:
-        return None
-    ops = logs[-1]
+    return data
 
-    regime  = ops.get("regime", "UNKNOWN")
-    nifty   = ops.get("nifty", 0)
-    dma50   = ops.get("dma50", 0)
-    dma200  = ops.get("dma200", 0)
 
-    # Days in current regime from consecutive tail of logs
-    regime_days = 1
-    for log in reversed(logs[:-1]):
-        if log.get("regime") == regime:
-            regime_days += 1
-        else:
-            break
+# ── HTML ──────────────────────────────────────────────────────────────────────
 
-    dist_pts = nifty - dma200
-    dist_pct = (dist_pts / dma200 * 100) if dma200 else 0
-
-    # Next rebalance
-    future = sorted(d for d in wb["rebalance_dates"] if d > today)
-    next_rebal    = future[0] if future else None
-    days_to_rebal = (next_rebal - today).days if next_rebal else None
-
-    # Paper day
-    paper_day = max(1, (today - PAPER_START).days + 1) if today >= PAPER_START else 0
-
-    # Portfolio
-    port_vals = [r["portfolio"] for r in wb["daily_log"] if r["portfolio"] is not None]
-    port_val  = port_vals[-1] if port_vals else PAPER_CAPITAL
-    peak_val  = max(port_vals) if port_vals else PAPER_CAPITAL
-    peak_val  = max(peak_val, PAPER_CAPITAL)
-
-    # Cash
-    alloc = sum(p["alloc"] for p in wb["positions"] if isinstance(p["alloc"], (int, float)))
-    cash  = port_val - alloc
-
-    # Drawdown
-    drawdown = (peak_val - port_val) / peak_val * 100 if peak_val > 0 else 0
-
-    # Unrealized
-    unreal = sum(p["unrealized"] for p in wb["positions"] if isinstance(p["unrealized"], (int, float)))
-
-    # Kill switches
-    kills = []
-    if regime == "BEAR" and wb["positions"]:
-        kills.append(("K2", "Bear regime with open positions — exit immediately", "critical"))
-    if drawdown >= 15:
-        kills.append(("K3", f"Portfolio drawdown {drawdown:.1f}% >= 15% halt threshold", "critical"))
-    elif drawdown >= 10:
-        kills.append(("K1", f"Portfolio drawdown {drawdown:.1f}% >= 10% warning threshold", "warning"))
-
-    # Completed trade stats
-    completed = wb["trades"]
-    wins = sum(1 for t in completed if t.get("win") == "Y")
-    net_pnl = sum(t["net_pnl"] for t in completed if isinstance(t.get("net_pnl"), (int, float)))
-
-    emergency = "CRITICAL" if any(k[2] == "critical" for k in kills) else \
-                "WARNING"  if kills else "NOMINAL"
-
-    shadow = load_shadow_data()
-
-    return {
-        "generated_at":  datetime.now().strftime("%Y-%m-%d %H:%M"),
-        "data_date":     ops.get("data_date", str(today)),
-        "paper_day":     paper_day,
-        "regime":        regime,
-        "regime_days":   regime_days,
-        "nifty":         nifty,
-        "dma50":         dma50,
-        "dma200":        dma200,
-        "dist_pts":      dist_pts,
-        "dist_pct":      dist_pct,
-        "next_rebal":    next_rebal,
-        "days_to_rebal": days_to_rebal,
-        "port_val":      port_val,
-        "peak_val":      peak_val,
-        "cash":          cash,
-        "alloc":         alloc,
-        "drawdown":      drawdown,
-        "unreal":        unreal,
-        "positions":     wb["positions"],
-        "n_trades":      len(completed),
-        "wins":          wins,
-        "net_pnl":       net_pnl,
-        "kills":         kills,
-        "emergency":     emergency,
-        "shadow":        shadow,
-    }
-
-# ── 4. HTML ───────────────────────────────────────────────────────────────────
-def _inr(v):
-    if v is None: return "—"
-    try:
-        v = float(v)
-        sign = "-" if v < 0 else ("+" if v != 0 else "")
-        return f"{sign}Rs.{abs(v):,.0f}"
-    except Exception:
-        return str(v)
-
-def _d(d):
-    if d is None: return "—"
-    if isinstance(d, (date, datetime)): return d.strftime("%d %b %Y")
-    return str(d)
-
-REGIME_PALETTE = {
-    "BEAR": {"accent": "#e05252", "bg": "#200e0e", "border": "#4a1a1a"},
-    "BULL": {"accent": "#4caf50", "bg": "#0a1a0c", "border": "#1a3d1e"},
-    "FLAT": {"accent": "#f0b429", "bg": "#1a1400", "border": "#3d3000"},
-}
-
-def render(m):
-    r        = m["regime"]
-    pal      = REGIME_PALETTE.get(r, {"accent":"#888","bg":"#1a1a1a","border":"#333"})
-    em       = m["emergency"]
-    em_color = {"NOMINAL":"#4caf50","WARNING":"#f0b429","CRITICAL":"#e05252"}[em]
-    em_icon  = {"NOMINAL":"&#10003;","WARNING":"&#9888;","CRITICAL":"&#9888;"}[em]
-
-    dist_dir = "above" if m["dist_pts"] >= 0 else "below"
-    dist_c   = "#4caf50" if m["dist_pts"] >= 0 else "#e05252"
-    dist_sgn = "+" if m["dist_pts"] >= 0 else ""
-
-    dd_c = "#e05252" if m["drawdown"] >= 10 else ("#f0b429" if m["drawdown"] >= 5 else "#aaa")
-
-    # Positions table rows
-    pos_rows = ""
-    for p in m["positions"]:
-        unreal = p.get("unrealized", 0) or 0
-        pct    = p.get("pnl_pct")
-        pnl_c  = "#4caf50" if unreal >= 0 else "#e05252"
-        cur    = p.get("current")
-        sl     = p.get("sl")
-        buf    = f"{(cur-sl)/cur*100:.1f}%" if sl and cur and cur > 0 else "—"
-        pos_rows += (
-            f"<tr>"
-            f"<td class='td-sym'>{p['symbol']}</td>"
-            f"<td class='td'>{_d(p.get('entry_date'))}</td>"
-            f"<td class='td'>Rs.{float(p['entry_px']):,.2f}</td>"
-            f"<td class='td'>{p.get('qty','—')}</td>"
-            f"<td class='td'>{('Rs.'+f'{float(cur):,.2f}') if cur else '—'}</td>"
-            f"<td class='td' style='color:{pnl_c};font-weight:500'>{_inr(unreal)}</td>"
-            f"<td class='td' style='color:{pnl_c}'>{f'{float(pct)*100:.1f}%' if pct else '—'}</td>"
-            f"<td class='td'>{('Rs.'+f'{float(sl):,.2f}') if sl else '—'} <span class='muted'>({buf} buffer)</span></td>"
-            f"<td class='td muted'>{p.get('days_held','—')}</td>"
-            f"</tr>"
-        )
-    if not pos_rows:
-        msg = "No open positions — Bear regime. 100% cash." if r == "BEAR" else "No open positions."
-        pos_rows = f"<tr><td colspan='9' class='td' style='text-align:center;color:#444;padding:20px'>{msg}</td></tr>"
-
-    # Kill switch pills — K1 through K6
-    kill_map = {k[0]: k for k in m["kills"]}
-    pills = ""
-    for k in ["K1","K2","K3","K4","K5","K6"]:
-        if k in kill_map:
-            kc = "#e05252" if kill_map[k][2]=="critical" else "#f0b429"
-            pills += f"<span class='pill' style='border-color:{kc};color:{kc}' title='{kill_map[k][1]}'>{k} &#9888;</span>"
-        else:
-            pills += f"<span class='pill ok'>{k} &#10003;</span>"
-
-    kill_detail = "".join(
-        "<div class='kill-msg' style='color:{c}'>&#9888; {k}: {msg}</div>".format(
-            c="#e05252" if sev == "critical" else "#f0b429", k=kid, msg=msg
-        )
-        for kid, msg, sev in m["kills"]
-    )
-
-    wr_str = f"{m['wins']}/{m['n_trades']} W/L" if m["n_trades"] > 0 else "No closed trades"
-
-    sh = m["shadow"]
-    sh_ret_c = "#4caf50" if sh["return_pct"] >= 0 else "#e05252"
-    sh_pnl_c = "#4caf50" if sh["pnl"] >= 0 else "#e05252"
-    sh_delta_c = "#4caf50" if sh["comparison_delta"] >= 0 else "#e05252"
-    sh_regime_label = {
-        "ACTIVE": "ACTIVE (50-DMA filter)",
-        "CASH": "CASH (below 50-DMA)",
-    }.get(sh["regime"], sh["regime"])
-
-    return f"""<!DOCTYPE html>
-<html lang="en">
+HTML = r"""<!DOCTYPE html>
+<html>
 <head>
-<meta charset="UTF-8">
-<meta http-equiv="refresh" content="300">
-<title>MoneyBot — Operator Dashboard</title>
+<meta charset="utf-8">
+<title>MoneyBot Dashboard</title>
 <style>
-*{{box-sizing:border-box;margin:0;padding:0}}
-body{{font-family:'Segoe UI',system-ui,sans-serif;background:#0d0d0d;color:#ddd;padding:16px 20px;min-height:100vh}}
-.topbar{{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #1e1e1e;padding-bottom:12px;margin-bottom:16px}}
-.title{{font-size:15px;font-weight:600;color:#fff;letter-spacing:.2px}}
-.subtitle{{font-size:11px;color:#444;margin-top:3px}}
-.em{{padding:5px 14px;border-radius:4px;font-size:12px;font-weight:600;letter-spacing:.6px;border:1px solid {em_color}44;color:{em_color};background:{em_color}11}}
-.row3{{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px}}
-.row4{{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px}}
-.card{{background:#161616;border:1px solid #202020;border-radius:8px;padding:14px 16px}}
-.clabel{{font-size:10px;color:#444;text-transform:uppercase;letter-spacing:.8px;margin-bottom:7px}}
-.cval{{font-size:22px;font-weight:600;line-height:1.1;color:#e0e0e0}}
-.csub{{font-size:12px;color:#444;margin-top:5px}}
-.regime-card{{background:{pal['bg']};border:1px solid {pal['border']};border-radius:8px;padding:16px 18px}}
-.regime-name{{font-size:38px;font-weight:700;color:{pal['accent']};letter-spacing:1px;line-height:1}}
-.regime-desc{{font-size:12px;color:{pal['accent']}77;margin-top:8px}}
-.regime-days{{font-size:11px;color:{pal['accent']}55;margin-top:6px}}
-.section{{font-size:10px;color:#333;text-transform:uppercase;letter-spacing:.8px;margin:0 0 8px 2px}}
-.pos-wrap{{background:#161616;border:1px solid #202020;border-radius:8px;overflow:hidden;margin-bottom:14px}}
-table{{width:100%;border-collapse:collapse;font-size:13px}}
-.th{{padding:7px 12px;text-align:left;color:#333;font-size:10px;text-transform:uppercase;letter-spacing:.6px;font-weight:500;background:#111;border-bottom:1px solid #1e1e1e}}
-.td{{padding:9px 12px;border-bottom:1px solid #1a1a1a;color:#ccc;vertical-align:middle}}
-.td-sym{{padding:9px 12px;border-bottom:1px solid #1a1a1a;font-weight:600;color:#e8e8e8}}
-tbody tr:last-child td{{border-bottom:none}}
-tbody tr:hover td, tbody tr:hover .td-sym{{background:#1a1a1a}}
-.muted{{color:#444;font-size:11px}}
-.kill-row{{background:#111;border:1px solid #1e1e1e;border-radius:8px;padding:10px 14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}}
-.kill-label{{font-size:10px;color:#333;text-transform:uppercase;letter-spacing:.8px;margin-right:4px}}
-.pill{{padding:3px 10px;border-radius:4px;border:1px solid #2a2a2a;font-size:11px;font-weight:500;white-space:nowrap}}
-.pill.ok{{color:#1e4d24;border-color:#1a2e1c}}
-.kill-msg{{font-size:12px;margin-top:5px;padding-left:2px}}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, 'Segoe UI', sans-serif; background: #0d0d0d; color: #e0e0e0; }
+.topbar {
+  background: #141414; border-bottom: 1px solid #222;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 24px; position: sticky; top: 0; z-index: 10;
+}
+.topbar h1 { font-size: 16px; font-weight: 600; color: #fff; }
+.topbar .meta { font-size: 12px; color: #555; margin-top: 2px; }
+.controls { display: flex; gap: 8px; }
+.btn {
+  padding: 8px 16px; border: none; border-radius: 8px;
+  font-size: 13px; font-weight: 600; cursor: pointer;
+}
+.btn-start   { background: #4a9eff; color: #fff; }
+.btn-dry     { background: #1e1e1e; color: #aaa; border: 1px solid #333; }
+.btn-stop    { background: #ff4a4a; color: #fff; }
+.btn-refresh { background: #1e1e1e; color: #888; border: 1px solid #2a2a2a; }
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 16px; padding: 20px;
+}
+.panel {
+  background: #1a1a1a; border: 1px solid #252525;
+  border-radius: 12px; padding: 18px 20px;
+}
+.panel-title {
+  font-size: 10px; color: #555; letter-spacing: 1.2px;
+  text-transform: uppercase; margin-bottom: 14px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.regime-badge {
+  display: inline-block; padding: 4px 14px; border-radius: 20px;
+  font-size: 13px; font-weight: 700; letter-spacing: 1px; margin-bottom: 12px;
+}
+.BEAR { background: #2a1010; color: #ff6b6b; border: 1px solid #4a1e1e; }
+.BULL { background: #102a10; color: #4cff72; border: 1px solid #1e4a1e; }
+.FLAT { background: #2a2a10; color: #ffd93d; border: 1px solid #4a4a1e; }
+.UNKNOWN { background: #1e1e1e; color: #666; border: 1px solid #333; }
+.krow {
+  display: flex; justify-content: space-between; padding: 6px 0;
+  border-bottom: 1px solid #1e1e1e; font-size: 13px;
+}
+.krow:last-child { border-bottom: none; }
+.kl { color: #555; }
+.kv { color: #ccc; font-variant-numeric: tabular-nums; }
+.good { color: #4cff72 !important; }
+.bad  { color: #ff6b6b !important; }
+.warn { color: #ffd93d !important; }
+.pipe {
+  display: flex; justify-content: space-between;
+  padding: 6px 0; border-bottom: 1px solid #1a1a1a; font-size: 12px;
+}
+.pipe:last-child { border-bottom: none; }
+.pl { color: #666; }
+table.cands { width: 100%; border-collapse: collapse; font-size: 11px; }
+table.cands th {
+  color: #444; font-weight: 500; text-align: right;
+  padding: 4px 6px; border-bottom: 1px solid #222;
+}
+table.cands th:first-child, table.cands td:first-child { text-align: left; }
+table.cands td {
+  padding: 5px 6px; text-align: right; color: #999;
+  border-bottom: 1px solid #1a1a1a;
+}
+table.cands td:first-child { color: #ddd; font-weight: 500; }
+.log-box {
+  background: #111; border-radius: 6px; padding: 10px;
+  font-family: 'Cascadia Code', 'Consolas', monospace; font-size: 10px;
+  color: #555; max-height: 260px; overflow-y: auto; line-height: 1.6;
+}
+.log-box .e { color: #ff6b6b; }
+.log-box .w { color: #ffd93d; }
+.log-box .g { color: #4cff72; }
+.hist td { padding: 5px 8px; font-size: 12px; border-bottom: 1px solid #1a1a1a; color: #888; }
+.hist td:first-child { color: #555; }
+.dot {
+  display: inline-block; width: 8px; height: 8px;
+  border-radius: 50%; margin-right: 6px; vertical-align: middle;
+}
+.dot.live { background: #4cff72; box-shadow: 0 0 6px #4cff72; animation: p 1.5s infinite; }
+.dot.off  { background: #333; }
+@keyframes p { 0%,100%{opacity:1} 50%{opacity:.3} }
+.empty { color: #444; font-size: 13px; padding: 4px 0; }
+.loading { text-align: center; color: #333; padding: 60px; font-size: 14px; }
+.full-width { grid-column: 1 / -1; }
 </style>
 </head>
 <body>
-
 <div class="topbar">
   <div>
-    <div class="title">MoneyBot RS60/EP40 &nbsp;&#183;&nbsp; Operator Dashboard</div>
-    <div class="subtitle">Paper day {m['paper_day']} &nbsp;&#183;&nbsp; Data: {m['data_date']} &nbsp;&#183;&nbsp; Generated: {m['generated_at']} &nbsp;&#183;&nbsp; Auto-refresh 5 min</div>
+    <h1>📈 MoneyBot
+      <span id="botDot" style="font-size:12px;font-weight:400;margin-left:8px"></span>
+    </h1>
+    <div class="meta">v1.3.1 &nbsp;·&nbsp; RS60/EP40 &nbsp;·&nbsp; Policy-C &nbsp;·&nbsp; Top-10 &nbsp;·&nbsp; 10% SL &nbsp;·&nbsp; <span id="refreshLabel">—</span></div>
   </div>
-  <div class="em">{em_icon} &nbsp;{em}</div>
-</div>
-
-<div class="row3">
-
-  <div class="regime-card">
-    <div class="clabel" style="color:{pal['accent']}55">Regime &nbsp;(Policy C)</div>
-    <div class="regime-name">{r}</div>
-    <div class="regime-desc">{'100% cash &mdash; no new entries permitted' if r=='BEAR' else 'Tradeable &mdash; run candidate list on rebalance day'}</div>
-    <div class="regime-days">{m['regime_days']} consecutive day{'s' if m['regime_days']!=1 else ''} tracked in this regime</div>
-  </div>
-
-  <div class="card">
-    <div class="clabel">Distance to 200-DMA</div>
-    <div class="cval" style="color:{dist_c};font-size:28px">{dist_sgn}{abs(m['dist_pts']):,.0f} <span style="font-size:15px;font-weight:400;color:{dist_c}88">pts</span></div>
-    <div class="csub">Nifty is <span style="color:{dist_c}">{abs(m['dist_pct']):.2f}%</span> {dist_dir} the 200-DMA</div>
-    <div style="margin-top:10px;font-size:11px;color:#2a2a2a;display:flex;gap:16px">
-      <span>Nifty <span style="color:#555">{m['nifty']:,.0f}</span></span>
-      <span>50-DMA <span style="color:#555">{m['dma50']:,.0f}</span></span>
-      <span>200-DMA <span style="color:#555">{m['dma200']:,.0f}</span></span>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="clabel">Next rebalance</div>
-    <div class="cval" style="font-size:20px">{_d(m['next_rebal'])}</div>
-    <div class="csub">{'in ' + str(m['days_to_rebal']) + ' calendar days' if m['days_to_rebal'] else 'None scheduled'}</div>
-    <div style="margin-top:10px;font-size:11px;{'color:#f0b429' if m['days_to_rebal']==0 else 'color:#2a2a2a'}">
-      {'&#9654; Today is rebalance day &mdash; check Top-10 before 9:20 AM' if m['days_to_rebal']==0 else f'Completed trades: {m["n_trades"]} &nbsp;&#183;&nbsp; {wr_str}'}
-    </div>
-  </div>
-
-</div>
-
-<div class="row4">
-
-  <div class="card">
-    <div class="clabel">Portfolio value</div>
-    <div class="cval">Rs.{m['port_val']:,.0f}</div>
-    <div class="csub">Started Rs.{PAPER_CAPITAL:,}</div>
-  </div>
-
-  <div class="card">
-    <div class="clabel">Cash available</div>
-    <div class="cval">Rs.{m['cash']:,.0f}</div>
-    <div class="csub">{f"Rs.{m['alloc']:,.0f} in {len(m['positions'])} position{'s' if len(m['positions'])!=1 else ''}" if m['positions'] else "No open positions"}</div>
-  </div>
-
-  <div class="card">
-    <div class="clabel">Drawdown from peak</div>
-    <div class="cval" style="color:{dd_c}">{'-' if m['drawdown']>0 else ''}{m['drawdown']:.1f}%</div>
-    <div class="csub">Peak Rs.{m['peak_val']:,.0f}</div>
-  </div>
-
-  <div class="card">
-    <div class="clabel">Unrealized P&amp;L</div>
-    <div class="cval" style="color:{'#4caf50' if m['unreal']>=0 else '#e05252'}">{'+' if m['unreal']>0 else ''}Rs.{m['unreal']:,.0f}</div>
-    <div class="csub">{len(m['positions'])} open position{'s' if len(m['positions'])!=1 else ''}</div>
-  </div>
-
-</div>
-
-<div class="section">Open positions ({len(m['positions'])})</div>
-<div class="pos-wrap">
-  <table>
-    <thead>
-      <tr>
-        <th class="th">Symbol</th>
-        <th class="th">Entry date</th>
-        <th class="th">Entry price</th>
-        <th class="th">Qty</th>
-        <th class="th">Current price</th>
-        <th class="th">Unrealized P&amp;L</th>
-        <th class="th">P&amp;L %</th>
-        <th class="th">Stop-loss</th>
-        <th class="th">Days held</th>
-      </tr>
-    </thead>
-    <tbody>{pos_rows}</tbody>
-  </table>
-</div>
-
-<div class="section">Shadow Engine &mdash; Experimental (RS60/EP40 + 50-DMA regime, paper only)</div>
-<div style="background:#111;border:1px solid #1a1a2a;border-radius:8px;padding:14px 16px;margin-bottom:14px;display:grid;grid-template-columns:repeat(5,1fr);gap:12px">
-  <div>
-    <div class="clabel" style="color:#5566aa">Regime</div>
-    <div style="font-size:15px;font-weight:600;color:#7788cc">{sh_regime_label}</div>
-  </div>
-  <div>
-    <div class="clabel" style="color:#5566aa">Portfolio value</div>
-    <div style="font-size:15px;font-weight:600;color:#aabbdd">Rs.{sh['portfolio_value']:,.0f}</div>
-  </div>
-  <div>
-    <div class="clabel" style="color:#5566aa">Total PnL</div>
-    <div style="font-size:15px;font-weight:600;color:{sh_pnl_c}">{'+' if sh['pnl']>=0 else ''}Rs.{sh['pnl']:,.0f}</div>
-  </div>
-  <div>
-    <div class="clabel" style="color:#5566aa">Return</div>
-    <div style="font-size:15px;font-weight:600;color:{sh_ret_c}">{sh['return_pct']:+.2f}%</div>
-    <div style="font-size:10px;color:#334;margin-top:3px">vs prod {sh['comparison_delta']:+.2f}% <span style="color:{sh_delta_c}">delta</span></div>
-  </div>
-  <div>
-    <div class="clabel" style="color:#5566aa">Trades / Win rate</div>
-    <div style="font-size:15px;font-weight:600;color:#aabbdd">{sh['trades']} trades</div>
-    <div style="font-size:11px;color:#5566aa;margin-top:3px">{sh['win_rate']:.1f}% win rate</div>
+  <div class="controls">
+    <button class="btn btn-refresh" onclick="load()">↻ Refresh</button>
+    <button class="btn btn-dry"    onclick="runBot(true)">Dry Run</button>
+    <button class="btn btn-start"  id="btnStart" onclick="runBot(false)" style="display:none">▶ Start Bot</button>
+    <button class="btn btn-stop"   id="btnStop"  onclick="stopBot()"    style="display:none">⏹ Stop Bot</button>
   </div>
 </div>
-{f'<div style="font-size:11px;color:#445;margin:-8px 0 12px 2px;padding:6px 10px;background:#0e0e14;border-radius:4px;border-left:2px solid #334">&nbsp;{sh["comparison_verdict"]}</div>' if sh["comparison_verdict"] else ''}
 
-<div class="kill-row">
-  <span class="kill-label">Kill switches</span>
-  {pills}
-  {'<span class="muted" style="margin-left:6px;font-size:11px">All checks passed</span>' if not m['kills'] else ''}
-</div>
-{kill_detail}
+<div id="main" class="loading">Opening kitchen…</div>
 
+<script>
+function fmt(n) {
+  if (n == null || n === '') return '—';
+  return Number(n).toLocaleString('en-IN', {maximumFractionDigits:2});
+}
+function row(l, v) {
+  return '<div class="krow"><span class="kl">'+l+'</span><span class="kv">'+v+'</span></div>';
+}
+function pipe(l, v, cls) {
+  return '<div class="pipe"><span class="pl">'+l+'</span><span class="'+cls+'">'+v+'</span></div>';
+}
+
+function load() {
+  fetch('/kitchen')
+    .then(r => r.json())
+    .then(render)
+    .catch(e => {
+      document.getElementById('main').innerHTML =
+        '<div style="color:#ff6b6b;padding:40px">Error loading data: '+e+'</div>';
+    });
+}
+
+function runBot(dry) {
+  fetch('/start' + (dry ? '?dry=1' : ''), {method:'POST'}).then(() => setTimeout(load, 1000));
+}
+function stopBot() {
+  fetch('/stop', {method:'POST'}).then(() => setTimeout(load, 500));
+}
+
+function render(d) {
+  const ops   = d.ops   || {};
+  const state = d.state || {};
+  const running = d.bot_running;
+
+  document.getElementById('botDot').innerHTML =
+    '<span class="dot '+(running?'live':'off')+'"></span>' +
+    (running ? '<span class="good">Running</span>' : '<span style="color:#444">Idle</span>');
+  document.getElementById('btnStart').style.display = running ? 'none' : '';
+  document.getElementById('btnStop').style.display  = running ? ''     : 'none';
+  document.getElementById('refreshLabel').textContent = 'Updated ' + d.generated;
+
+  const regime   = ops.regime || 'UNKNOWN';
+  const tradeable = ops.tradeable;
+  const gap = (ops.nifty && ops.dma200) ? (ops.nifty - ops.dma200) : null;
+  const candidates = ops.candidates || [];
+  const buys = ops.buys || [];
+  const rebalDue = ops.rebalance_due;
+  const positions = state.positions || {};
+  const posKeys = Object.keys(positions);
+  const pnl = state.pnl || 0;
+
+  let g = '';
+
+  // ── REGIME ──────────────────────────────────────────────────────────────
+  g += '<div class="panel">';
+  g += '<div class="panel-title">📊 Regime<span>'+(ops.data_date||'')+'</span></div>';
+  g += '<span class="regime-badge '+(regime||'UNKNOWN')+'">'+regime+'</span>';
+  if (tradeable === false)
+    g += ' <span class="bad" style="font-size:12px">Buying BLOCKED — 100% cash</span>';
+  else if (tradeable === true)
+    g += ' <span class="good" style="font-size:12px">Buying ALLOWED</span>';
+  g += row('Nifty Close', ops.nifty  ? '₹'+fmt(ops.nifty)  : '—');
+  g += row('50-DMA',      ops.dma50  ? '₹'+fmt(ops.dma50)  : '—');
+  g += row('200-DMA',     ops.dma200 ? '₹'+fmt(ops.dma200) : '—');
+  if (gap !== null) {
+    const gc = gap >= 0 ? 'good' : 'bad';
+    g += row('Gap to 200-DMA',
+      '<span class="'+gc+'">'+(gap>=0?'+':'')+fmt(gap)+' pts ('+(gap>=0?'+':'')+
+      (gap/ops.dma200*100).toFixed(1)+'%)</span>');
+    if (gap < 0)
+      g += row('Re-entry trigger', '₹'+fmt(ops.dma200)+' (Nifty must close above this)');
+  }
+  g += '</div>';
+
+  // ── PIPELINE ────────────────────────────────────────────────────────────
+  g += '<div class="panel">';
+  g += '<div class="panel-title">🔍 Decision Pipeline</div>';
+  g += pipe('Universe tracked',        '136 stocks',                           'kv');
+  g += pipe('Candidates scored',       candidates.length > 0
+              ? candidates.length+' stocks scored'
+              : (regime==='BEAR' ? 'Skipped — BEAR regime' : 'No data yet'),   'kv');
+  g += pipe('50-DMA stock filter',     candidates.length > 0 ? 'Applied ✓' : '—', 'kv');
+  g += pipe('Regime gate (Policy-C)',  tradeable
+              ? '✓ PASSED — '+regime
+              : '✗ BLOCKED — '+regime+' regime (hold cash)',                    tradeable?'good':'bad');
+  g += pipe('Rebalance gate (10d)',    rebalDue
+              ? '✓ PASSED — rebalance due'
+              : '✗ Not due today (monitoring only)',                             rebalDue?'good':'warn');
+  g += pipe('BUY orders in plan',      buys.length > 0 ? buys.length : '0',    buys.length>0?'good':'warn');
+  const zeroQ = buys.filter(b => b.qty===0).length;
+  if (zeroQ > 0)
+    g += pipe('Rejected (qty=0, price > ₹1,150)', zeroQ,                       'bad');
+  const validB = buys.filter(b => (b.qty||0) > 0).length;
+  g += pipe('Orders submitted to broker', validB > 0 ? validB : '0',           validB>0?'good':'kv');
+  g += '</div>';
+
+  // ── CANDIDATES ──────────────────────────────────────────────────────────
+  g += '<div class="panel">';
+  g += '<div class="panel-title">🏆 Top-10 Candidates (RS60/EP40 + 50-DMA filter)</div>';
+  if (candidates.length === 0) {
+    g += '<div class="empty">'+(regime==='BEAR'
+      ? 'Not generated — BEAR regime. Bot holds cash until Nifty reclaims 200-DMA.'
+      : 'No data yet. Run the bot to populate this.')+'</div>';
+  } else {
+    g += '<table class="cands"><thead><tr><th>#</th><th>Symbol</th><th>Price</th>' +
+         '<th>RS%</th><th>EP%</th><th>Score</th></tr></thead><tbody>';
+    candidates.forEach((c,i) => {
+      g += '<tr><td style="color:#444">'+(i+1)+'</td><td>'+c.symbol+
+           '</td><td>₹'+fmt(c.price)+'</td><td>'+
+           (c.rs_pct||'—')+'</td><td>'+(c.ep_pct||'—')+
+           '</td><td style="color:#4a9eff">'+(c.composite||'—')+'</td></tr>';
+    });
+    g += '</tbody></table>';
+  }
+  g += '</div>';
+
+  // ── POSITIONS ───────────────────────────────────────────────────────────
+  g += '<div class="panel">';
+  g += '<div class="panel-title">💼 Positions <span>'+posKeys.length+' open</span></div>';
+  if (posKeys.length === 0) {
+    g += '<div class="empty">No open positions — 100% cash</div>';
+  } else {
+    posKeys.forEach(inst => {
+      const p = positions[inst];
+      g += row(p.plain || inst.split('|')[1] || inst,
+        'Qty '+p.qty+' @ ₹'+fmt(p.entry)+' &nbsp;·&nbsp; SL ₹'+fmt(p.sl_price));
+    });
+  }
+  const pnlClass = pnl >= 0 ? 'good' : 'bad';
+  g += row('Cumulative P&L',
+    '<span class="'+pnlClass+'">'+(pnl>=0?'+':'')+' ₹'+fmt(Math.abs(pnl))+'</span>');
+  g += row('Completed trades', (state.trades||[]).length);
+  g += row('Last ops date', state.last_ops_date || '—');
+  g += '</div>';
+
+  // ── HISTORY ─────────────────────────────────────────────────────────────
+  const summaries = d.recent_summaries || [];
+  g += '<div class="panel">';
+  g += '<div class="panel-title">📅 Recent Daily Summaries</div>';
+  if (summaries.length === 0) {
+    g += '<div class="empty">No daily summaries yet.</div>';
+  } else {
+    g += '<table class="hist" style="width:100%"><thead><tr>' +
+         '<td>Date</td><td>Status</td><td>Regime</td><td>Errors</td><td>Runtime</td>' +
+         '</tr></thead><tbody>';
+    [...summaries].reverse().forEach(s => {
+      const sc = s.status==='PASS' ? 'good' : s.status==='WEEKEND' ? '' : 'bad';
+      g += '<tr><td>'+s.date+'</td><td class="'+sc+'">'+s.status+'</td>' +
+           '<td>'+(s.regime||'—')+'</td><td>'+(s.errors||0)+'</td>' +
+           '<td>'+(s.runtime_seconds ? s.runtime_seconds+'s' : '—')+'</td></tr>';
+    });
+    g += '</tbody></table>';
+  }
+  g += '</div>';
+
+  // ── LOG TAIL ─────────────────────────────────────────────────────────────
+  const logLines = d.log_tail || [];
+  g += '<div class="panel full-width">';
+  g += '<div class="panel-title">📋 Log Tail <span>last 50 lines of auto_daily.log</span></div>';
+  if (logLines.length === 0) {
+    g += '<div class="empty">No log file yet. The bot hasn\'t run today.</div>';
+  } else {
+    g += '<div class="log-box">';
+    logLines.forEach(line => {
+      let cls = '';
+      if (/ERROR|FAILED|CRITICAL|crash/i.test(line)) cls = 'e';
+      else if (/WARNING|WARN/i.test(line)) cls = 'w';
+      else if (/PASS|Done\.|BOUGHT|SOLD|filled|Lock acquired/i.test(line)) cls = 'g';
+      const safe = line.replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      g += '<div class="'+cls+'">'+safe+'</div>';
+    });
+    g += '</div>';
+  }
+  g += '</div>';
+
+  if (d.ops_missing) {
+    g += '<div class="panel full-width" style="border-color:#333">' +
+         '<div class="empty">⏳ '+d.ops_missing+'</div></div>';
+  }
+
+  document.getElementById('main').innerHTML = '<div class="grid">'+g+'</div>';
+}
+
+load();
+setInterval(load, 30000);
+</script>
 </body>
 </html>"""
 
-# ── 5. MAIN ───────────────────────────────────────────────────────────────────
 
-def _build_and_write():
-    """Shared logic: load data, compute metrics, write HTML. Returns output path."""
-    logs = load_ops_logs()
-    if not logs:
-        print(f"ERROR: No ops_log_*.json files found in {BASE}")
-        return None
+class Handler(BaseHTTPRequestHandler):
+    def log_message(self, *args): pass
 
-    wb = load_workbook()
-    m  = compute(logs, wb)
-    if m is None:
-        print("ERROR: Could not compute metrics — no valid ops logs.")
-        return None
+    def do_GET(self):
+        if self.path == "/kitchen":
+            data = get_kitchen_data()
+            self._json(json.dumps(data, default=str).encode())
+        else:
+            self._html(HTML.encode())
 
-    print(f"  Regime: {m['regime']}  |  Nifty: {m['nifty']:,.0f}  |  Emergency: {m['emergency']}")
-    print(f"  Positions: {len(m['positions'])}  |  Cash: Rs.{m['cash']:,.0f}  |  DD: {m['drawdown']:.1f}%")
+    def do_POST(self):
+        if self.path.startswith("/start"):
+            dry = "dry=1" in self.path
+            threading.Thread(target=start_bot, args=(dry,), daemon=True).start()
+            self._json(b'{"ok":true}')
+        elif self.path == "/stop":
+            stop_bot()
+            self._json(b'{"ok":true}')
+        else:
+            self._json(b'{"ok":false}')
 
-    html     = render(m)
-    out_path = os.path.join(BASE, "dashboard.html")
-    with open(out_path, "w", encoding="utf-8") as f:
-        f.write(html)
-    return out_path
+    def _html(self, body):
+        self.send_response(200)
+        self.send_header("Content-Type", "text/html; charset=utf-8")
+        self.end_headers()
+        self.wfile.write(body)
 
-
-def main():
-    """Build dashboard and open in browser (first call only)."""
-    print("MoneyBot Dashboard — loading...")
-    out_path = _build_and_write()
-    if out_path is None:
-        sys.exit(1)
-    webbrowser.open(f"file:///{out_path.replace(os.sep, '/')}")
-    print(f"  Opened: {out_path}")
-
-
-def refresh_only():
-    """Rebuild dashboard HTML without opening a new browser tab.
-    The HTML has <meta http-equiv='refresh' content='300'> so the
-    already-open tab will pick up the new file automatically."""
-    out_path = _build_and_write()
-    if out_path:
-        print(f"  Dashboard refreshed: {out_path}")
+    def _json(self, body):
+        self.send_response(200)
+        self.send_header("Content-Type", "application/json")
+        self.end_headers()
+        self.wfile.write(body)
 
 
 if __name__ == "__main__":
-    main()
+    server = HTTPServer(("127.0.0.1", PORT), Handler)
+    url = f"http://localhost:{PORT}"
+    print(f"MoneyBot Dashboard → {url}")
+    print("Auto-refreshes every 30 seconds. Press Ctrl+C to stop.")
+    webbrowser.open(url)
+    server.serve_forever()
