@@ -155,6 +155,18 @@ def main():
         save_daily_summary(summary)
         return
 
+    # Time guard: refuse to run before 8:50 AM IST (pre-market — no data yet)
+    now = datetime.now()
+    if now.hour < 8 or (now.hour == 8 and now.minute < 50):
+        log.warning(
+            f"TOO EARLY: current time is {now.strftime('%H:%M')} IST. "
+            f"Bot must not run before 08:50 (market opens 09:15). "
+            f"Cron is set for 09:05 — check your trigger."
+        )
+        summary["status"] = "TOO_EARLY"
+        save_daily_summary(summary)
+        return
+
     # Step 0a: Strategy fingerprint — halt if parameters have drifted
     try:
         from strategy_fingerprint import assert_frozen, get_fingerprint, record_daily as _fp_record
