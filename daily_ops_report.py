@@ -312,8 +312,11 @@ def main():
         print("  ACTION   : HOLD CASH. No positions. No trades.")
         print(f"  Paper portfolio value: Rs.{PAPER_CAPITAL:,} (100% cash)")
         print(f"  Re-entry trigger: Nifty must close above {reg['dma200']:,.0f} (200DMA)")
-        print(f"  Current gap to 200DMA: {reg['dma200']-reg['close']:,.0f} points "
-              f"({(reg['dma200']/reg['close']-1)*100:.1f}% above current)")
+        if reg['close'] > 0:
+            print(f"  Current gap to 200DMA: {reg['dma200']-reg['close']:,.0f} points "
+                  f"({(reg['dma200']/reg['close']-1)*100:.1f}% above current)")
+        else:
+            print(f"  Current gap to 200DMA: N/A (no market data available)")
 
         print("\n[2] CANDIDATE LIST")
         print("-" * 40)
