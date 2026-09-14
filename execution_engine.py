@@ -150,6 +150,7 @@ def already_ordered_today(client, instrument, transaction_type="BUY"):
                     and order.get("status", "").lower() in ("complete", "open", "trigger pending")):
                 log.info(f"Duplicate blocked: {instrument} {tx_type} already in order book today (order_id={order.get('order_id','')})")
                 return True
+        return False  # order book reachable, no matching order — safe to place
     except Exception as e:
         log.error(f"Duplicate check FAILED — BLOCKING order (fail-closed): {e}")
         return True  # fail-closed: assume duplicate exists, block the order
@@ -160,6 +161,7 @@ def already_ordered_today(client, instrument, transaction_type="BUY"):
 def pre_market_health_check(client):
     """Comprehensive pre-market verification."""
     errors = []
+    available = 0.0  # stays 0 if the funds call below fails
 
     # 1. Broker API reachable + token valid
     try:
@@ -464,7 +466,18 @@ def execute_sells(client, sells, state):
                 "pnl": round(pnl, 2), "time": str(datetime.now()),
                 "exit_reason": s["reason"],
             })
-            del state["positions"][inst]
+            # Only clear the position if the broker filled the FULL quantity.
+            # A partial fill used to delete the whole position, leaving the
+            # unsold remainder held at the broker but invisible to the SL monitor.
+            remaining = pos["qty"] - exit_qty
+            if remaining > 0:
+                state["positions"][inst]["qty"] = remaining
+                log.warning(
+                    f"PARTIAL SELL {s['symbol']}: {exit_qty}/{pos['qty']} filled. "
+                    f"{remaining} share(s) still held and still SL-monitored."
+                )
+            else:
+                del state["positions"][inst]
             log.info(f"SOLD {s['symbol']} @ Rs.{exit_price:.2f} | PnL: Rs.{pnl:+,.2f}")
             # Save state immediately after each sell so a crash mid-loop
             # won't leave a sold position in state (enables Bug #3 duplicate protection)
@@ -557,7 +570,7 @@ def monitor_stop_losses(client, state):
         if ltp <= 0:
             continue
 
-        sl_price = pos.get("sl_price", pos["entry"] * 0.90)
+        sl_price = pos.get("sl_price", pos["entry"] * (1 - SL_PCT))
         if ltp <= sl_price:
             exits.append({
                 "instrument": inst,
@@ -682,7 +695,20 @@ def run_monitor():
 
     while True:
         now = datetime.now()
-        if now.weekday() >= 5 or not (9 * 60 + 15 <= now.hour * 60 + now.minute <= 15 * 60 + 30):
+        mins = now.hour * 60 + now.minute
+        OPEN_MIN, CLOSE_MIN = 9 * 60 + 15, 15 * 60 + 30
+
+        if now.weekday() >= 5:
+            log.info("Weekend. Monitor stopping.")
+            break
+        if mins < OPEN_MIN:
+            # auto_daily hands off at ~9:14; sleeping to the open (instead of
+            # exiting) is what keeps SL monitoring alive for the rest of the day.
+            wait_s = (OPEN_MIN - mins) * 60
+            log.info(f"Pre-market ({now.strftime('%H:%M')}). Waiting {wait_s}s for 09:15 open...")
+            time.sleep(wait_s)
+            continue
+        if mins > CLOSE_MIN:
             log.info("Market closed. Monitor stopping.")
             break
 
@@ -725,7 +751,7 @@ def show_status():
         print(f"  {'-'*50}")
         for inst, pos in active.items():
             sym = pos.get("plain", inst.split("|")[-1])
-            sl = pos.get("sl_price", pos["entry"] * 0.90)
+            sl = pos.get("sl_price", pos["entry"] * (1 - SL_PCT))
             print(f"  {sym:<14} {pos['qty']:>5} Rs.{pos['entry']:>8,.2f} Rs.{sl:>8,.2f} {pos.get('time','')[:10]}")
 
     if pending:

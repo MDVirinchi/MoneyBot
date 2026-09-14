@@ -79,11 +79,27 @@ def nse(t): return t + ".NS"
 def get_regime():
     # FIX: 220 calendar days ~ 152 trading days -- not enough for 200-bar SMA.
     # 400d gives ~275 trading days, safely covering the 200-bar requirement.
-    data = yf.download("^NSEI", period="400d", interval="1d",
-                       progress=False, auto_adjust=True)
+    _bear_on_error = {"date": date.today(), "close": 0, "dma50": 0, "dma200": 0,
+                      "regime": "BEAR", "tradeable": False, "data_error": True}
+    try:
+        data = yf.download("^NSEI", period="400d", interval="1d",
+                           progress=False, auto_adjust=True)
+    except Exception as e:
+        print(f"  DATA ERROR: Nifty download raised ({e}). Defaulting to BEAR.")
+        return _bear_on_error
+
+    if data is None or len(data) == 0:
+        print("  DATA ERROR: Nifty download returned no rows "
+              "(market closed / API failure). Defaulting to BEAR.")
+        return _bear_on_error
+
     # FIX: yfinance returns MultiIndex DataFrame for single tickers.
     # data["Close"] is a 1-column DataFrame; squeeze() converts to Series.
-    close = data["Close"].squeeze().dropna()
+    try:
+        close = data["Close"].squeeze().dropna()
+    except Exception as e:
+        print(f"  DATA ERROR: Nifty data malformed ({e}). Defaulting to BEAR.")
+        return _bear_on_error
 
     # ── DATA INTEGRITY GATE ──────────────────────────────────────────────
     # Validates: freshness, completeness, no NaN before computing regime.
@@ -135,11 +151,20 @@ def fetch_and_score(nifty_closes):
     # FIX D1: period="100d" = ~71 calendar-day trading sessions, which is below
     # the RS_WINDOW+10=73 bar minimum and would cause all stocks to be skipped.
     # period="200d" = ~143 trading sessions, safely above all window requirements.
-    raw = yf.download(tickers, period="200d", interval="1d",
-                      progress=False, auto_adjust=True)
+    try:
+        raw = yf.download(tickers, period="200d", interval="1d",
+                          progress=False, auto_adjust=True)
+    except Exception as e:
+        return pd.DataFrame(), [(s, f"download failed: {e}") for s in STOCKS]
 
-    price_df  = raw["Close"] if "Close" in raw.columns else raw.xs("Close", axis=1, level=0)
-    volume_df = raw["Volume"] if "Volume" in raw.columns else raw.xs("Volume", axis=1, level=0)
+    if raw is None or len(raw) == 0:
+        return pd.DataFrame(), [(s, "download returned no rows") for s in STOCKS]
+
+    try:
+        price_df  = raw["Close"] if "Close" in raw.columns else raw.xs("Close", axis=1, level=0)
+        volume_df = raw["Volume"] if "Volume" in raw.columns else raw.xs("Volume", axis=1, level=0)
+    except Exception as e:
+        return pd.DataFrame(), [(s, f"malformed data: {e}") for s in STOCKS]
 
     # FIX: nifty_closes may be a 1-col DataFrame from yfinance MultiIndex download.
     # Convert to 1-D Series so .reindex().values produces a 1-D array, not (n,1) array.
@@ -306,6 +331,7 @@ def main():
     # Populated inside BULL/FLAT branch; stay empty in BEAR so JSON log can reference them
     top10   = pd.DataFrame()
     slip_df = pd.DataFrame()
+    df      = pd.DataFrame()
 
     if reg["regime"] == "BEAR":
         print("\n  Policy C: BEAR regime detected.")
@@ -378,9 +404,12 @@ def main():
         # Apply 50-DMA trend filter BEFORE selecting Top-N.
         # Stocks with high RS/EP but close < 50-DMA are already rolling over;
         # removing them reduces momentum-crash risk without changing RS/EP weights.
-        df_pass = df[df["above_50dma"]].reset_index(drop=True)
-        df_fail = df[~df["above_50dma"]]
-        top10   = df_pass.head(TOP_N).copy()
+        if df.empty:
+            print("\n  DATA ERROR: No stocks could be scored (network/data failure).")
+            print("  No candidate list and no orders will be generated today.")
+        df_pass = df[df["above_50dma"]].reset_index(drop=True) if not df.empty else df
+        df_fail = df[~df["above_50dma"]] if not df.empty else df
+        top10   = df_pass.head(TOP_N).copy() if not df_pass.empty else pd.DataFrame()
         if not df_fail.empty:
             print(f"\n  [TREND FILTER] 50-DMA excluded {len(df_fail)} stock(s) from Top-{TOP_N} eligibility:")
             for _, r in df_fail.head(5).iterrows():
@@ -413,7 +442,9 @@ def main():
                   f"{r['total_cost']:>13,.2f}")
             total_alloc += r['allocation']
 
-        cash_remaining = PAPER_CAPITAL - total_alloc
+        # total_alloc is sized from LIVE_PER_POS, so it must be compared against
+        # LIVE_CAPITAL. Using PAPER_CAPITAL here reported a false negative balance.
+        cash_remaining = LIVE_CAPITAL - total_alloc
         print(f"  {'TOTAL':>56} {total_alloc:>11,.0f}")
         print(f"  Cash remaining after fills: Rs.{cash_remaining:,.0f}")
         print(f"\n  Slippage model assumption: {SLIP_MODEL*100:.2f}% each way")
@@ -422,7 +453,10 @@ def main():
 
         print("\n[5] DEVIATION FLAGS vs BACKTEST EXPECTATIONS")
         print("-" * 40)
-        _check_deviations(top10, reg, df)
+        if top10.empty:
+            print("  No candidates to check — skipping deviation analysis.")
+        else:
+            _check_deviations(top10, reg, df)
 
         print("\n[6] WORKBOOK UPDATE INSTRUCTIONS")
         print("-" * 40)
@@ -438,13 +472,25 @@ def main():
         print("  Slippage_Tracker — log every buy order with prev close vs actual fill.")
         print("  Rebalance_Log  — log today as Rebal #1 after fills confirmed.")
 
+    # Order plan. Must be built BEFORE the pipeline summary below, which reads it.
+    candidates = [
+        {"symbol": r["symbol"], "price": r["price"],
+         "composite": round(r["composite"], 2),
+         "rs_pct": round(r["rs_pct"], 1), "ep_pct": round(r["ep_pct"], 1)}
+        for _, r in top10.iterrows()
+    ] if not top10.empty else []
+
+    buys = [
+        {"symbol": r["symbol"], "alloc_rs": round(r["allocation"], 0),
+         "qty": r["qty"], "sl_price": r["sl_level"]}
+        for _, r in slip_df.iterrows()
+    ] if (not slip_df.empty and rebal_due) else []
+
     # ── WHY NO TRADE? — Pipeline transparency report ─────────────────────────
     print("\n[X] WHY NO TRADE? — CANDIDATE PIPELINE SUMMARY")
     print("-" * 55)
     universe_size   = len(STOCKS)
-    scored_count    = len(top10) + (len(df) - len(top10) if not top10.empty and not df.empty else 0) if not top10.empty else 0
-    # Reconstruct full scored df from fetch_and_score if available (only in BULL/FLAT)
-    _df_full = df if not top10.empty else pd.DataFrame()
+    _df_full = df
     _passed_dma = len(_df_full[_df_full["above_50dma"]]) if not _df_full.empty else 0
     _top_n      = len(top10)
     _buys_gen   = len(buys) if rebal_due else 0
@@ -472,7 +518,10 @@ def main():
     if not _regime_ok:
         gap = reg['dma200'] - reg['close']
         print(f"\n  *** Entry will resume when Nifty reclaims {reg['dma200']:,.0f} (200DMA).")
-        print(f"  *** Current gap: {gap:,.0f} pts ({gap/reg['close']*100:.1f}% away).")
+        if reg['close'] > 0:
+            print(f"  *** Current gap: {gap:,.0f} pts ({gap/reg['close']*100:.1f}% away).")
+        else:
+            print(f"  *** Current gap: unavailable (no market data).")
     elif not _rebal_ok:
         print(f"\n  *** Regime is {reg['regime']} — next entry window in ~{days_to_rebal} trading days.")
 
@@ -482,19 +531,6 @@ def main():
     print(sep)
 
     # Save JSON log — paper_runner.py reads all keys below
-    candidates = [
-        {"symbol": r["symbol"], "price": r["price"],
-         "composite": round(r["composite"], 2),
-         "rs_pct": round(r["rs_pct"], 1), "ep_pct": round(r["ep_pct"], 1)}
-        for _, r in top10.iterrows()
-    ] if not top10.empty else []
-
-    buys = [
-        {"symbol": r["symbol"], "alloc_rs": round(r["allocation"], 0),
-         "qty": r["qty"], "sl_price": r["sl_level"]}
-        for _, r in slip_df.iterrows()
-    ] if (not slip_df.empty and rebal_due) else []
-
     log_data = {
         "report_date":   str(report_date),
         "data_date":     str(reg["date"]),
@@ -522,8 +558,10 @@ def _print_bear_watch(reg):
     print("\n[7] BEAR REGIME WATCH")
     print("-" * 40)
     gap = reg['dma200'] - reg['close']
-    pct = gap / reg['close'] * 100
-    print(f"  Nifty needs to rise {gap:,.0f} pts ({pct:.1f}%) to reclaim 200DMA")
+    if reg['close'] > 0:
+        print(f"  Nifty needs to rise {gap:,.0f} pts ({gap/reg['close']*100:.1f}%) to reclaim 200DMA")
+    else:
+        print(f"  Nifty needs to rise {gap:,.0f} pts to reclaim 200DMA (no live price available)")
     print(f"  50DMA gap to 200DMA: {reg['dma200']-reg['dma50']:,.0f} pts")
     print("  Monitor daily. Enter when BOTH:")
     print(f"    - Nifty close > {reg['dma200']:,.0f}  (200DMA)")
