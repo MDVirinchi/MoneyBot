@@ -106,6 +106,21 @@ and `_FROZEN["LIVE_PER_POS"]` to match, then commit.
 - **Start command:** `python3 ~/token_input.py` (opens web UI at localhost:8877)
 - **Env var required:** `PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python`
 
+### yfinance version — PIN EXACTLY, do not "upgrade"
+
+`yfinance==1.4.1`. Install with:
+
+```
+pip install --break-system-packages "yfinance==1.4.1"
+```
+
+`pip install --upgrade yfinance` **silently downgrades to 0.2.38** on this
+container (resolver backtracking). 0.2.38 cannot reach Yahoo's current API —
+every download returns `JSONDecodeError` and 0 rows, which the regime gate
+reads as a data failure and degrades to BEAR. The bot then holds cash forever
+while looking healthy. Always install the pinned version explicitly and verify
+with a real download before trusting a run.
+
 ---
 
 ## Mode: Paper Trading
