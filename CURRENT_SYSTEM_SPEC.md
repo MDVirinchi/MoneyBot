@@ -88,6 +88,39 @@ and `_FROZEN["LIVE_PER_POS"]` to match, then commit.
 
 ## Execution Timing
 
+### Container timezone — MUST be Asia/Kolkata
+
+The Ubuntu proot container defaults to **UTC**, 5:30 behind the phone. Every
+time decision in the bot uses `datetime.now()`, so under UTC:
+
+- `wait_until(9, 14)` fires at **2:44 PM IST**, hours after the open
+- the pre-market guard sees the 9:05 IST cron as 3:35 and rejects it
+- the SL monitor's 9:15–15:30 window becomes 2:45 PM–9:00 PM IST
+
+Set in two places (both already applied):
+1. Container: `/etc/localtime` → `/usr/share/zoneinfo/Asia/Kolkata`
+2. `run_auto_daily.sh` exports `TZ=Asia/Kolkata`
+
+Verify after any container rebuild:
+```
+proot-distro login ubuntu -- date        # must print IST, not UTC
+```
+
+### Schedule
+
+Cron (Termux, host clock is IST):
+```
+5 9 * * 1-5  ~/run_auto_daily.sh      # the trading pipeline
+35 3 * * 1-5 ~/run_moneybot.sh        # starts the token web UI only
+```
+
+`run_auto_daily.sh` holds a `termux-wake-lock` for the whole run and releases
+it via an EXIT trap. Without it Android kills the process during the 9:05→9:14
+sleep (observed 2026-08-24: all four processes died).
+
+**The access token must be entered before 9:05 AM** — it expires daily, and
+execution aborts on `Available margin is Rs.0.0` if it is stale.
+
 | Time (IST) | Action |
 |------------|--------|
 | 9:05 AM | Cron fires `auto_daily.py` |
