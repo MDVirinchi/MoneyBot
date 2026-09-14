@@ -390,11 +390,62 @@ def validate_orders(ops, state, available_cash):
         return [], sells, errors
 
     buys = []
-    sells = ops.get("sells", [])
+    sells = []
+    for s in ops.get("sells", []):  # operator-supplied; normally empty
+        s = dict(s)
+        s.setdefault("instrument", f"NSE_EQ|{s.get('symbol','')}")
+        s.setdefault("reason", "Operator sell (ops log)")
+        sells.append(s)
 
     if not ops.get("rebalance_due", False):
         log.info("No rebalance today. Monitoring only.")
         return [], [], errors
+
+    # Rebalance day: reconcile holdings against the new Top-N target.
+    # daily_ops_report has no view of the live portfolio, so the rotation is
+    # computed here, where state["positions"] is authoritative. Anything held
+    # that is no longer in today's candidate list gets rotated out.
+    target = {c.get("symbol") for c in ops.get("candidates", []) if c.get("symbol")}
+    if not target:
+        # Never liquidate on missing data: an empty candidate list means the
+        # scoring failed (network/data), not that the target is "no positions".
+        errors.append(
+            "Rebalance due but candidate list is EMPTY — refusing to liquidate "
+            "the portfolio on missing data. No rotation sells generated."
+        )
+    else:
+        for inst, pos in state["positions"].items():
+            if pos.get("pending_sell"):
+                continue
+            plain = pos.get("plain", inst.split("|")[-1])
+            if plain in target:
+                continue  # still a Top-N name, hold it
+            if inst in frozen:
+                errors.append(f"{plain}: dropped out of Top-{len(target)} but "
+                              f"FROZEN (corporate action) — manual review required")
+                continue
+            sells.append({
+                "symbol": plain,
+                "instrument": inst,
+                "qty": pos["qty"],
+                "reason": f"Rebalance EXIT (no longer in Top-{len(target)})",
+            })
+        if sells:
+            log.info(f"Rebalance rotation: {len(sells)} position(s) dropped out of Top-{len(target)}")
+
+    # Sells execute before buys, so validate buys against the cash the rotation
+    # will free up. Without this, a fully-deployed portfolio rejects every buy
+    # for "insufficient cash" on the exact day it is meant to rotate.
+    # Entry price is a proxy for exit price; the broker rejects genuine overdraw.
+    expected_proceeds = sum(
+        state["positions"].get(s["instrument"], {}).get("qty", 0)
+        * state["positions"].get(s["instrument"], {}).get("entry", 0)
+        for s in sells
+    )
+    if expected_proceeds > 0:
+        log.info(f"Estimated Rs.{expected_proceeds:,.0f} freed by {len(sells)} sell(s); "
+                 f"validating buys against Rs.{available_cash + expected_proceeds:,.0f}")
+        available_cash += expected_proceeds
 
     for b in ops.get("buys", []):
         sym = b.get("symbol", "")
